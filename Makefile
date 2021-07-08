@@ -6,24 +6,34 @@ CD=${ACTIVATE} cd ./my_project_name &&
 
 
 export DJANGO_SECRET_KEY="top-secret"
-export DJANGO_DEBUG="True"
-export DJANGO_ALLOWED_HOSTS="*"
-
-# SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-# DEBUG = os.getenv('DJANGO_DEBUG', False) in (True, 'True')
-# ALLOWED_HOSTS = [os.environ.get('DJANGO_ALLOWED_HOSTS')]
+export DJANGO_DEBUG=True
+export DJANGO_ALLOWED_HOSTS=*,127.0.0.1,localhost
 
 
 main: run
 
-
 # make init name=my_project_name
-init:
+init: start-django-project setup-makefile setup-django-settings
+
+start-django-project:
 	python3 -m venv .venv
 	${ACTIVATE} pip3 install django
 	${ACTIVATE} django-admin startproject ${name}
-	cd ${name} && echo 'django' > ./requirements.txt
+	echo 'django' > ./${name}/requirements.txt
+
+
+setup-makefile:
 	sed -i -e 's/my_project_name/${name}/' ./Makefile
+
+
+setup-django-settings:
+	SECRET_KEY="SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')" \
+	  && DEBUG="DEBUG = os.getenv('DJANGO_DEBUG', False) in (True, 'True')" \
+	  && ALLOWED_HOSTS="ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')" \
+	  && sed -i -e "s/import Path/import Path\nimport os/" ./${name}/${name}/settings.py \
+	  && sed -i -e "s/^SECRET_KEY.*/$${SECRET_KEY}/" ./${name}/${name}/settings.py \
+	  && sed -i -e "s/^DEBUG.*/$${DEBUG}/" ./${name}/${name}/settings.py \
+	  && sed -i -e "s/^ALLOWED_HOSTS.*/$${ALLOWED_HOSTS}/" ./${name}/${name}/settings.py 
 
 
 venv:
