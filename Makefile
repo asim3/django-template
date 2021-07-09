@@ -12,28 +12,8 @@ export DJANGO_ALLOWED_HOSTS=*,127.0.0.1,localhost
 
 main: run
 
-# make init name=my_project_name
-init: start-django-project setup-makefile setup-django-settings
-
-start-django-project:
-	python3 -m venv .venv
-	${ACTIVATE} pip3 install django
-	${ACTIVATE} django-admin startproject ${name}
-	echo 'django' > ./${name}/requirements.txt
-
-
-setup-makefile:
-	sed -i -e 's/my_project_name/${name}/' ./Makefile
-
-
-setup-django-settings:
-	SECRET_KEY="SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')" \
-	  && DEBUG="DEBUG = os.getenv('DJANGO_DEBUG', False) in (True, 'True')" \
-	  && ALLOWED_HOSTS="ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')" \
-	  && sed -i -e "s/import Path/import Path\nimport os/" ./${name}/${name}/settings.py \
-	  && sed -i -e "s/^SECRET_KEY.*/$${SECRET_KEY}/" ./${name}/${name}/settings.py \
-	  && sed -i -e "s/^DEBUG.*/$${DEBUG}/" ./${name}/${name}/settings.py \
-	  && sed -i -e "s/^ALLOWED_HOSTS.*/$${ALLOWED_HOSTS}/" ./${name}/${name}/settings.py 
+init: 
+	./setup/set-new-django-project.bash ${name}
 
 
 venv:
