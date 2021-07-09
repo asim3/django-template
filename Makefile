@@ -14,6 +14,7 @@ main: run
 
 init: 
 	./setup/set-new-django-project.bash ${name}
+	rm -rf ./setup/
 
 
 venv:

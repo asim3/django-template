@@ -26,15 +26,9 @@ update-project-name-in-makefile() {
 
 
 setup-django-settings() {
-	SECRET_KEY="SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')"
-	DEBUG="DEBUG = os.getenv('DJANGO_DEBUG', False) in (True, 'True')"
-	ALLOWED_HOSTS="ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')"
-
-	sed -i -e "s/^SECRET_KEY.*/${SECRET_KEY}/" ./${name}/${name}/settings.py
-	sed -i -e "s/^DEBUG.*/${DEBUG}/" ./${name}/${name}/settings.py
-	sed -i -e "s/^ALLOWED_HOSTS.*/${ALLOWED_HOSTS}/" ./${name}/${name}/settings.py 
-	
-	sed -i -e "s/import Path/import Path\nimport os/" ./${name}/${name}/settings.py
+	mkdir ./${name}/${name}/settings/
+	mv ./${name}/${name}/settings.py ./${name}/${name}/settings/base.py
+	mv ./setup/settings/* ./${name}/${name}/settings/
 }
 
 
