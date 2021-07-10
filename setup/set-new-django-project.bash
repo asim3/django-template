@@ -34,11 +34,8 @@ setup-django-settings() {
 
 
 setup-django-static() {
-	mkdir -p ./${name}/static_resources/css
-	touch    ./${name}/static_resources/css/main.css
-	
-	mkdir -p ./${name}/static_resources/js
-	touch    ./${name}/static_resources/js/main.js
+	mkdir -p ./${name}/static_resources/
+	mv ./setup/static_resources/* ./${name}/static_resources/
 }
 
 
