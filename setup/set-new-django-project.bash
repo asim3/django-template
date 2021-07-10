@@ -17,7 +17,7 @@ start-django-project() {
 	pip3 install django
 	django-admin startproject ${name}
 	
-    echo 'django' > ./${name}/requirements.txt
+    echo -e 'django\ndjango-heroku\ngunicorn' > ./requirements.txt
 }
 
 
@@ -42,7 +42,14 @@ setup-django-static() {
 }
 
 
+setup-heroku() {
+	echo "web: gunicorn --chdir ${name} ${name}.wsgi" > ./Procfile
+	echo "python-3.9.6" > ./runtime.txt
+}
+
+
 start-django-project
 update-project-name-in-makefile
 setup-django-settings
 setup-django-static
+setup-heroku

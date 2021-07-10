@@ -22,7 +22,7 @@ venv:
 
 
 install: venv
-	${CD} pip3 install -r ./requirements.txt
+	${ACTIVATE} pip3 install -r ./requirements.txt
 	${CD} python3 manage.py makemigrations
 	${CD} python3 manage.py migrate
 	- ${CD} python3 manage.py collectstatic --noinput
