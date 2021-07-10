@@ -30,7 +30,7 @@ install: venv
 
 # make test args=my_app
 tests:
-	${CD} if [ -x ./manage.py ]; then python3 manage.py test ${args}; fi;
+	if [ -d ./.venv ]; then ${CD} python3 manage.py test ${args}; fi;
 
 
 # make new app=my_app
