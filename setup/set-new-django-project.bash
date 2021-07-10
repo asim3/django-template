@@ -17,7 +17,7 @@ start-django-project() {
 	pip3 install django
 	django-admin startproject ${name}
 	
-    echo -e 'django\ndjango-heroku\ngunicorn' > ./requirements.txt
+	mv ./setup/requirements.txt ./requirements.txt
 }
 
 
