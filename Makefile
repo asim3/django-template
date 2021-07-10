@@ -13,7 +13,7 @@ export DJANGO_ALLOWED_HOSTS=*,127.0.0.1,localhost
 main: run
 
 init: 
-	./setup/set-new-django-project.bash ${name}
+	./setup/set-new-django-project.bash
 	rm -rf ./setup/
 
 

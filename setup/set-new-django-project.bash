@@ -6,7 +6,8 @@ set -eu
 set -o pipefail 
 
 
-name="${1}"
+echo -n "Project Name: "
+read name
 
 
 start-django-project() {
