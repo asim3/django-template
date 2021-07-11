@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 
-DEBUG = os.getenv('DJANGO_DEBUG', False) in (True, 'True')
+# DEBUG = os.getenv('DJANGO_DEBUG', False) in (True, 'True')
 
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
@@ -31,13 +31,13 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
 
-STATICFILES_DIRS = [ BASE_DIR / 'static_resources' ]
+STATICFILES_DIRS = [BASE_DIR / 'static_resources']
 
 
 MEDIA_URL = '/media/'
 
 
-MEDIA_ROOT = [ BASE_DIR / 'media' ]
+MEDIA_ROOT = [BASE_DIR / 'media']
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -56,7 +56,7 @@ LANGUAGES = [
 
 
 LOCALE_PATHS = (
-    ( BASE_DIR / 'locale' ),
+    (BASE_DIR / 'locale'),
 )
 
 

@@ -2,3 +2,4 @@ django
 django-heroku
 django-storages
 gunicorn
+storages
