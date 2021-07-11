@@ -13,7 +13,7 @@ Django Template
 
 ## Add New Django Project
 ```bash
-make init name=my_project_name
+make init
 ```
 
 

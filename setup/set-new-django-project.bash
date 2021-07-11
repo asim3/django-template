@@ -31,15 +31,18 @@ setup-django-settings() {
 	mkdir ./${name}/${name}/settings/
 	mv ./${name}/${name}/settings.py ./${name}/${name}/settings/base.py
 	mv ./setup/settings/* ./${name}/${name}/settings/
-	
-	mkdir ./${name}/backends/
-	mv ./setup/backends/* ./${name}/backends/
 }
 
 
 setup-django-static() {
 	mkdir -p ./${name}/static_resources/
 	mv ./setup/static_resources/* ./${name}/static_resources/
+}
+
+
+copy-django-apps() {
+	mv ./setup/apps/urls.py ./${name}/${name}/urls.py
+	mv ./setup/apps/* ./${name}/
 }
 
 
@@ -53,4 +56,5 @@ start-django-project
 update-project-name
 setup-django-settings
 setup-django-static
+copy-django-apps
 setup-heroku
