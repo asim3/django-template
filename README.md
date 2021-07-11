@@ -5,10 +5,8 @@ Django Template
 ## Config Vars (env)
 - `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.test`
 - `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.production`
-
 - `DJANGO_SECRET_KEY`
 - `DJANGO_ALLOWED_HOSTS`
-
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 
