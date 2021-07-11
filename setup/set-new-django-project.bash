@@ -21,8 +21,9 @@ start-django-project() {
 }
 
 
-update-project-name-in-makefile() {
-	sed -i -e "s/my_project_name/${name}/" ./Makefile
+update-project-name() {
+	sed -i -e "s/my_project_name/${name}/g" ./Makefile
+	sed -i -e "s/my_project_name/${name}/g" ./README.md 
 }
 
 
@@ -30,6 +31,9 @@ setup-django-settings() {
 	mkdir ./${name}/${name}/settings/
 	mv ./${name}/${name}/settings.py ./${name}/${name}/settings/base.py
 	mv ./setup/settings/* ./${name}/${name}/settings/
+	
+	mkdir ./${name}/backends/
+	mv ./setup/backends/* ./${name}/backends/
 }
 
 
@@ -46,7 +50,7 @@ setup-heroku() {
 
 
 start-django-project
-update-project-name-in-makefile
+update-project-name
 setup-django-settings
 setup-django-static
 setup-heroku
