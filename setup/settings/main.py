@@ -1,4 +1,5 @@
 from pathlib import Path
+from django.urls import reverse_lazy
 
 from .base import *
 
@@ -36,6 +37,32 @@ DATABASES = {
     }
 }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'ERROR',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}
+
 STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'static'
@@ -44,7 +71,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static_resources']
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = [BASE_DIR / 'media']
+MEDIA_ROOT = BASE_DIR / 'media'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -58,5 +85,13 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = (
-    (BASE_DIR / 'locale'),
+    BASE_DIR / 'locale',
 )
+
+TIME_ZONE = 'Asia/Riyadh'
+
+LOGIN_URL = reverse_lazy('admin:login')
+
+LOGIN_REDIRECT_URL = reverse_lazy('admin:index')
+
+LOGOUT_REDIRECT_URL = reverse_lazy('admin:login')
