@@ -47,7 +47,8 @@ copy-django-apps() {
 
 
 setup-heroku() {
-	echo "web: gunicorn --chdir ${name} ${name}.wsgi" > ./Procfile
+	echo "release: cd ${name} && python3 manage.py migrate" > ./Procfile
+	echo "web: gunicorn --chdir ${name} ${name}.wsgi" >> ./Procfile
 	echo "python-3.9.6" > ./runtime.txt
 }
 
