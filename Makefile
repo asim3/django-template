@@ -2,7 +2,9 @@ SHELL=/bin/bash
 
 ACTIVATE=source ./.venv/bin/activate &&
 
-CD=${ACTIVATE} cd ./my_project_name &&
+PROJECT_NAME=my_project_name
+
+CD=${ACTIVATE} cd ./${PROJECT_NAME} &&
 
 
 export DJANGO_SECRET_KEY="top-secret"
@@ -54,3 +56,7 @@ run:
 
 shell:
 	${CD} python3 manage.py shell
+
+
+check:
+	${CD} export DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.production; python manage.py check --deploy
