@@ -1,6 +1,7 @@
 django
+boto3
+gunicorn
 django-heroku
 django-storages
-gunicorn
-boto3
-django-storages
+django-crispy-forms
+django-simple-history
