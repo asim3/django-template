@@ -19,6 +19,8 @@ INSTALLED_APPS += [
     'simple_history',
 ]
 
+MIDDLEWARE.insert(2, 'django.middleware.locale.LocaleMiddleware')
+
 TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 
 DATABASES = {
