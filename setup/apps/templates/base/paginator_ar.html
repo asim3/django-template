@@ -1,0 +1,69 @@
+{% if is_paginated %}
+<ul class="pagination my-3 justify-content-center" style="direction: ltr!important;">
+
+    {% if page_obj.has_next %}
+    <li class="page-item pointer">
+        <span class="page-link" onclick="change_GET_tag('page', {{ page_obj.next_page_number }})">
+        Next / التالي
+        </span>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <span class="page-link">Next / التالي</span>
+    </li>
+    {% endif %}
+
+    {% for i in paginator.page_range reversed %}
+    {% if i > page_obj.number|add:'-5' and i < page_obj.number|add:'7' %}
+    {% if page_obj.number == i %}
+    <li class="page-item active"><span class="page-link">
+            {{ i }}
+          </span></li>
+    {% else %}
+    <li class="page-item pointer"><span class="page-link" onclick="change_GET_tag('page', {{ i }})">
+            {{ i }}
+          </span></li>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_previous %}
+    <li class="page-item pointer">
+        <span class="page-link" onclick="change_GET_tag('page', {{ page_obj.previous_page_number }})">
+          Previous / السابق
+        </span>
+    </li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Previous / السابق</span></li>
+    {% endif %}
+</ul>
+{% endif %}
+
+<script>
+
+  {% if is_paginated %}
+    const table_page_number = {{ page_obj.number }}
+    const open_page = () => table_page_number
+  {% endif %}
+
+  function change_GET_tag(tag_name, new_tag_value) {
+    const href = window.location.href
+    const start_index = href.indexOf(tag_name+"=") + tag_name.length + 1
+    if(10 < start_index) {
+      const end_index = href.indexOf('&', start_index)
+      const current_tag_value = end_index == -1 ? href.slice(start_index) : href.slice(start_index, end_index)
+      const new_value = current_tag_value == new_tag_value ? '-' + new_tag_value : new_tag_value
+      window.location.href = href.replace(tag_name+"=" + current_tag_value, tag_name+"=" + new_value)
+    }
+    else {
+      if(!href.includes('?')) {
+        window.location.href = href + "?"+tag_name+"=" + new_tag_value
+      }
+      else {
+        window.location.href = href + "&"+tag_name+"=" + new_tag_value
+      }
+    }
+  }
+
+
+</script>
