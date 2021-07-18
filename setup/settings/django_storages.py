@@ -10,7 +10,7 @@ AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
-AWS_STORAGE_BUCKET_NAME = 'test2-my-bucket'
+AWS_STORAGE_BUCKET_NAME = 'project-staging-production'
 
 AWS_S3_REGION_NAME = 'eu-central-1'
 
