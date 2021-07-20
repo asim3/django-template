@@ -1,7 +1,5 @@
 from .main import *
-
-
-import django_heroku
+from .django_storages import *
 
 
 DEBUG = True
@@ -18,5 +16,3 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 
 SECURE_REFERRER_POLICY = 'same-origin'
-
-django_heroku.settings(locals())

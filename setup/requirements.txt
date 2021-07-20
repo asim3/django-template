@@ -3,5 +3,5 @@ boto3
 gunicorn
 django-heroku
 django-storages
-django-crispy-forms
+django-antispam
 django-simple-history

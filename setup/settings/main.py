@@ -2,8 +2,10 @@ from pathlib import Path
 from django.urls import reverse_lazy
 
 from .base import *
+from .anti_spam import *
 
 import os
+import django_heroku
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -15,7 +17,9 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
 
 INSTALLED_APPS += [
-    'crispy_forms',
+    'antispam',
+    'antispam.honeypot',
+    'antispam.captcha',
     'simple_history',
 ]
 
@@ -66,8 +70,6 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
 LANGUAGE_CODE = 'ar-sa'
 
 # LANGUAGE_CODE = 'en-us'
@@ -83,8 +85,14 @@ LOCALE_PATHS = (
 
 TIME_ZONE = 'Asia/Riyadh'
 
+DATE_FORMAT = 'Y / m / d'
+
+DATETIME_FORMAT = 'Y / m / d P'
+
 LOGIN_URL = reverse_lazy('admin:login')
 
 LOGIN_REDIRECT_URL = reverse_lazy('admin:index')
 
 LOGOUT_REDIRECT_URL = reverse_lazy('admin:login')
+
+django_heroku.settings(locals())

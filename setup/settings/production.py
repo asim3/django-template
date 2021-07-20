@@ -2,9 +2,6 @@ from .main import *
 from .django_storages import *
 
 
-import django_heroku
-
-
 DEBUG = False
 
 SECURE_SSL_REDIRECT = True
@@ -26,4 +23,5 @@ SECURE_BROWSER_XSS_FILTER = True
 
 SECURE_REFERRER_POLICY = 'same-origin'
 
-django_heroku.settings(locals())
+# django_storages
+AWS_STORAGE_BUCKET_NAME = 'project-production'

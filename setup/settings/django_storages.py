@@ -10,7 +10,8 @@ AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
-AWS_STORAGE_BUCKET_NAME = 'project-staging-production'
+# check production settings
+AWS_STORAGE_BUCKET_NAME = 'project-staging'
 
 AWS_S3_REGION_NAME = 'eu-central-1'
 
