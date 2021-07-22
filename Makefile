@@ -17,6 +17,10 @@ main: run
 init: 
 	./setup/set-new-django-project.bash
 	rm -rf ./setup/
+	code .
+	git add .
+	git commit -m "setting up a new Django project"
+	git push origin main 
 
 
 venv:
