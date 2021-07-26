@@ -1,3 +1,11 @@
+String.prototype.clean_digits = function () {
+    const arabic_numbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+    return this.replace(/[٠-٩]/g, function (number) {
+        return arabic_numbers.indexOf(number)
+    });
+}
+
+
 function _main(event) {
     document
         .getElementById("id_select")
@@ -5,7 +13,6 @@ function _main(event) {
 
     select_changed()
 }
-
 
 
 window.addEventListener("load", _main)
