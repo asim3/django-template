@@ -96,3 +96,17 @@ LOGIN_REDIRECT_URL = reverse_lazy('admin:index')
 LOGOUT_REDIRECT_URL = reverse_lazy('admin:login')
 
 django_heroku.settings(locals())
+
+DEFAULT_FROM_EMAIL = "info@gmail.com"
+
+EMAIL_HOST = "smtp.gmail.com"
+
+EMAIL_HOST_USER = "info@gmail.com"
+
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True
+
+EMAIL_TIMEOUT = 15
