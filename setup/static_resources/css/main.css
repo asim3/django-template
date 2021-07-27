@@ -1,10 +1,11 @@
 :root {
-    --main-1: #0f67e2;
-    --main-2: #1d99ff;
-    --main-3: #dfdfdf;
-    --main-4: #fafafa;
-    --main-border: #e3e7af;
-    --main-bg: #edeef1;
+    --color-title: #5E5958;
+    --color-main: #707070;
+    --color-border: #707070;
+    --color-background: #C6CAD0;
+    --color-header-text: #EDEDED;
+    --color-header-background: #4F7086;
+    --color-special: #DEB194;
 }
 
 
@@ -29,7 +30,7 @@ head, body {
 
 body {
     font-family: main-font-regular, TimesNewRoman, sans-serif;
-    background-color: var(--main-4);
+    background-color: var(--color-background);
 }
 
 input, button, submit { 
@@ -38,6 +39,7 @@ input, button, submit {
 
 a, a:hover {
     text-decoration: none!important;
+    color: inherit !important;
     cursor: pointer;
 }
 
@@ -62,7 +64,7 @@ input[type="text"], input[type="email"], select {
 	font-weight: 400;
 	line-height: 1.5;
 	color: #212529;
-    background: linear-gradient(0deg, var(--main-3) 50%, var(--main-4) 100%);
+    background: linear-gradient(0deg, var(--color-special) 50%, rgba(255, 255, 255, 0) 100%);
 	border: 1px solid #ced4da;
 	border-radius: .25rem;
 	transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
@@ -87,46 +89,55 @@ li {
 
 
 
-
-.bg-main-1 {
-    background-color: var(--main-1);
+.text-color-title {
+    color: var(--color-title)
 }
 
-.bg-main-2 {
-    background-color: var(--main-2);
+.text-color-main {
+    color: var(--color-main)
 }
 
-.bg-main-3 {
-    background-color: var(--main-3);
+.text-color-header {
+    color: var(--color-header-text)
 }
 
-.bg-main-4 {
-    background: var(--main-1);
-    background: linear-gradient(245deg, var(--main-1) 55%, var(--main-2) 100%);
-}
-
-.bg-main-bg {
-    background-color: var(--main-bg);
-}
-
-.text-main-1 {
-    color: var(--main-1);
-}
-
-.text-main-2 {
-    color: var(--main-2);
-}
-
-.text-main-3 {
-    color: var(--main-3);
-}
-
-.text-main-4 {
-    color: var(--main-4);
+.text-color-special {
+    color: var(--color-special)
 }
 
 
 
+.border-color-main {
+    border-color: var(--color-border)
+}
+
+.border-color-special {
+    border-color: var(--color-special)
+}
+
+
+
+.bg-color-main {
+    background-color: var(--color-background)
+}
+
+.bg-color-header {
+    background-color: var(--color-header-background)
+}
+
+.bg-color-special {
+    background-color: var(--color-special)
+}
+
+.bg-color-gradient {
+    background: var(--color-background);
+    background: linear-gradient(245deg, var(--color-background) 50%, rgba(255, 255, 255, 0) 100%);
+}
+
+.bg-color-gradient-special {
+    background: var(--color-special);
+    background: linear-gradient(245deg, var(--color-special) 50%, rgba(255, 255, 255, 0) 100%);
+}
 
 
 
