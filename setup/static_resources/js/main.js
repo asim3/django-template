@@ -7,6 +7,10 @@ String.prototype.clean_digits = function () {
 
 
 function _main(event) {
+    const today = new Date()
+    $("#all_rights_reserved").append(today.getFullYear())
+
+
     document
         .getElementById("id_select")
         .addEventListener("change", select_changed)

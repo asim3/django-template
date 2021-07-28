@@ -64,3 +64,11 @@ shell:
 
 check:
 	${CD} export DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.production; python manage.py check --deploy
+
+
+production:
+	- git fetch origin production
+	git checkout production || git checkout -b production
+	git merge main
+	git push origin production 
+	git checkout main

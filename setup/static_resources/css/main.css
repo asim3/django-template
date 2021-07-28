@@ -176,18 +176,20 @@ li {
 
 
 
-@media (max-width: 768px) {
-    .list-image {
-        list-style-type: lower-alpha;
-    }
+@media (max-width: 991.98px) {
+    /* lg */
 }
 
 
 
 
+@media (max-width: 767.98px) {
+    /* md */
+}
 
-@media (min-width: 768px) { 
-    .list-image {
-        list-style-type: upper-alpha;
-    }
+
+
+
+@media (max-width: 575.98px) {
+    /* sm */
 }
