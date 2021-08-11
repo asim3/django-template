@@ -5,3 +5,4 @@ django-heroku
 django-storages
 django-antispam
 django-simple-history
+openpyxl
