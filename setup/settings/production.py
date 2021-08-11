@@ -22,6 +22,3 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 
 SECURE_REFERRER_POLICY = 'same-origin'
-
-# django_storages
-AWS_STORAGE_BUCKET_NAME = 'project-production'
