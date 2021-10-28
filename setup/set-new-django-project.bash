@@ -12,7 +12,7 @@ read name
 
 start-django-project() {
 	python3 -m venv .venv
-    source ./.venv/bin/activate
+	source ./.venv/bin/activate
 
 	pip3 install django
 	django-admin startproject ${name}
@@ -40,6 +40,12 @@ setup-django-static() {
 }
 
 
+setup-kubernetes() {
+	mv ./setup/Dockerfile ./
+	mv ./setup/manifest ./
+}
+
+
 copy-django-apps() {
 	mv ./setup/apps/urls.py ./${name}/${name}/urls.py
 	mv ./setup/apps/* ./${name}/
@@ -53,9 +59,19 @@ setup-heroku() {
 }
 
 
+commit-and-push() {
+	code .
+	git add .
+	git commit -m "setting up a new Django project"
+	git push origin main 
+}
+
+
 start-django-project
 update-project-name
 setup-django-settings
 setup-django-static
+setup-kubernetes
 copy-django-apps
 setup-heroku
+commit-and-push
