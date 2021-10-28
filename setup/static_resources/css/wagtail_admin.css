@@ -1,0 +1,10 @@
+:root {
+    --color-primary-hue:204;
+    --color-primary-saturation:26%;
+    --color-primary-lightness:42%;
+}
+
+
+body {
+    font-family: main-font-regular, TimesNewRoman, sans-serif;
+}

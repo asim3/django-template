@@ -8,9 +8,6 @@
     --color-special: #DEB194;
 }
 
-
-
-
 .font-regular {
     font-family: main-font-regular, TimesNewRoman, sans-serif;
 }
@@ -18,9 +15,6 @@
 .font-bold {
     font-family: main-font-bold, TimesNewRoman, sans-serif;
 }
-
-
-
 
 head, body {
     width: 100vw;
@@ -93,6 +87,10 @@ li {
     color: var(--color-title)
 }
 
+.text-color-subtitle {
+    color: var(--color-header-background)
+}
+
 .text-color-main {
     color: var(--color-main)
 }
@@ -105,14 +103,14 @@ li {
     color: var(--color-special)
 }
 
-
-
 .border-color-main {
-    border-color: var(--color-border)
+    border-color: var(--color-border);
+    border-style: solid;
 }
 
 .border-color-special {
-    border-color: var(--color-special)
+    border-color: var(--color-special);
+    border-style: solid;
 }
 
 
@@ -139,7 +137,23 @@ li {
     background: linear-gradient(245deg, var(--color-special) 50%, rgba(255, 255, 255, 0) 100%);
 }
 
+.text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
+.text-pre {
+    white-space: pre-wrap;
+}
+
+.dir-rtl {
+    direction: rtl;
+}
+
+.dir-ltr {
+    direction: ltr;
+}
 
 .no-select {
     -webkit-touch-callout: none;
@@ -149,6 +163,10 @@ li {
     -ms-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+
+.pointer {
+    cursor: pointer;
 }
 
 .background-center {
@@ -172,6 +190,7 @@ li {
     list-style-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='10' width='10'%3E%3Ccircle cx='5' cy='5' r='5' fill='%233C8EFF' /%3E%3C/svg%3E ");
 }
 
+/* End of Django Template Styles */
 
 
 
