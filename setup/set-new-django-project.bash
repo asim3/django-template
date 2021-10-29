@@ -59,6 +59,10 @@ setup-heroku() {
 }
 
 
+remove-setup-files() {
+	rm -rf ./setup/
+}
+
 commit-and-push() {
 	code .
 	git add .
@@ -74,4 +78,5 @@ setup-django-static
 setup-kubernetes
 copy-django-apps
 setup-heroku
+remove-setup-files
 commit-and-push
