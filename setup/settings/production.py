@@ -1,5 +1,6 @@
 from .main import *
-from .django_storages import *
+from .third_party.django_storages import *
+from .third_party.heroku import *
 
 
 DEBUG = False

@@ -2,10 +2,9 @@ from pathlib import Path
 from django.urls import reverse_lazy
 
 from .base import *
-from .anti_spam import *
+from .third_party.anti_spam import *
 
 import os
-import django_heroku
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -95,19 +94,3 @@ LOGIN_URL = reverse_lazy('admin:login')
 LOGIN_REDIRECT_URL = reverse_lazy('admin:index')
 
 LOGOUT_REDIRECT_URL = reverse_lazy('admin:login')
-
-django_heroku.settings(locals())
-
-DEFAULT_FROM_EMAIL = "info@gmail.com"
-
-EMAIL_HOST = "smtp.gmail.com"
-
-EMAIL_HOST_USER = "info@gmail.com"
-
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-EMAIL_PORT = 587
-
-EMAIL_USE_TLS = True
-
-EMAIL_TIMEOUT = 15
