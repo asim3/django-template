@@ -1,17 +1,31 @@
-FROM alpine:latest
+FROM python:3.8-alpine3.12
 
-RUN apk add --no-cache --update python3 py3-pip bash
+ADD __app_name__/requirements.txt /app/requirements.txt
 
-COPY ./webapp/requirements.txt /tmp/requirements.txt
+RUN set -ex \
+    && apk add --no-cache --virtual .build-deps postgresql-dev build-base \
+    && python -m venv /env \
+    && /env/bin/pip install --upgrade pip \
+    && /env/bin/pip install --no-cache-dir -r /app/requirements.txt \
+    && runDeps="$(scanelf --needed --nobanner --recursive /env \
+    | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
+    | sort -u \
+    | xargs -r apk info --installed \
+    | sort -u)" \
+    && apk add --virtual rundeps $runDeps \
+    && apk del .build-deps
 
-RUN pip3 install --no-cache-dir -q -r /tmp/requirements.txt
 
-COPY ./webapp /opt/webapp/
-
-WORKDIR /opt/webapp
+# setup python virtual environment
+ENV VIRTUAL_ENV /__app_name__/env
+ENV PATH /env/bin:$PATH
 
 RUN adduser -D myuser
-
 USER myuser
 
-CMD gunicorn --workers 3 --bind 0.0.0.0:5000 wsgi 
+ADD __app_name__ /app
+WORKDIR /app
+
+EXPOSE 8000
+
+CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "__app_name__.wsgi"]
