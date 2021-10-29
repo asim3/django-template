@@ -190,6 +190,10 @@ li {
     list-style-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='10' width='10'%3E%3Ccircle cx='5' cy='5' r='5' fill='%233C8EFF' /%3E%3C/svg%3E ");
 }
 
+.navbar-brand img {
+    max-height: 5rem;
+}
+
 /* End of Django Template Styles */
 
 
