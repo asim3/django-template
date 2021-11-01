@@ -70,9 +70,9 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
-LANGUAGE_CODE = 'ar-sa'
+LANGUAGE_CODE = 'ar'
 
-# LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en'
 
 LANGUAGES = [
     ('ar', 'العربية'),
