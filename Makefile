@@ -16,6 +16,7 @@ main: run
 
 init: 
 	./setup/set-new-django-project.bash
+	echo -e "#####################################\n#                                   #\n#    Please Run [ make install ]    #\n#                                   #\n#####################################"
 
 
 venv:
