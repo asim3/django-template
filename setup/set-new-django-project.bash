@@ -79,4 +79,8 @@ setup-kubernetes
 copy-django-apps
 setup-heroku
 remove-setup-files
-commit-and-push
+
+repository_name=$(basename $(pwd))
+if [ ! "$repository_name" = "django-template" ]; then
+	commit-and-push
+fi
