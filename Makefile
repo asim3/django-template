@@ -25,6 +25,7 @@ venv:
 
 install: venv
 	${ACTIVATE} pip3 install -r ./requirements.txt
+	${CD} python3 manage.py makemigrations --dry-run
 	${CD} python3 manage.py makemigrations
 	${CD} python3 manage.py migrate
 	- ${CD} python3 manage.py collectstatic --noinput
@@ -58,6 +59,11 @@ shell:
 	${CD} python3 manage.py shell
 
 
+# make data-migrations app=my_app
+data-migrations:
+	${CD} python3 manage.py makemigrations --empty ${app}
+
+
 check:
 	${CD} export DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.production; python manage.py check --deploy
 
@@ -68,3 +74,8 @@ production:
 	git merge main
 	git push origin production 
 	git checkout main
+
+backup:
+	heroku pg:backups:capture -a ${PROJECT_NAME}-production
+	heroku pg:backups:restore $$(heroku pg:backups:url -a ${PROJECT_NAME}-production) \
+		--confirm=${PROJECT_NAME}-staging -a ${PROJECT_NAME}-staging
