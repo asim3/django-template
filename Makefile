@@ -23,7 +23,7 @@ venv:
 	if [ ! -d ./.venv ]; then python3 -m venv ./.venv; fi;
 
 
-install: venv
+install: venv sql-backup
 	${ACTIVATE} pip3 install -r ./requirements.txt
 	${CD} python3 manage.py makemigrations --dry-run
 	${CD} python3 manage.py makemigrations
@@ -79,3 +79,7 @@ backup:
 	heroku pg:backups:capture -a ${PROJECT_NAME}-production
 	heroku pg:backups:restore $$(heroku pg:backups:url -a ${PROJECT_NAME}-production) \
 		--confirm=${PROJECT_NAME}-staging -a ${PROJECT_NAME}-staging
+
+sql-backup:
+	${CD} mkdir -p ./media/backup
+	- ${CD} cp ./db.sqlite3 ./media/backup/db_$$(date +'%Y-%m-%d_%H-%M-%S').sqlite3
