@@ -43,6 +43,7 @@ setup-django-static() {
 
 setup-kubernetes() {
 	mv ./setup/Dockerfile ./
+	mv ./setup/docker-compose.yaml ./
 	mv ./setup/manifest ./
 }
 
@@ -63,6 +64,7 @@ setup-heroku() {
 remove-setup-files() {
 	rm -rf ./setup/
 }
+
 
 commit-and-push() {
 	code .
