@@ -55,6 +55,11 @@ run:
 	${CD} python3 manage.py runserver
 
 
+docker:
+	sudo docker-compose config
+	sudo docker-compose up
+
+
 shell:
 	${CD} python3 manage.py shell
 

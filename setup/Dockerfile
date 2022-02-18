@@ -1,31 +1,49 @@
-FROM python:3.8-alpine3.12
+FROM python:3.9-alpine
 
-ADD __app_name__/requirements.txt /app/requirements.txt
+RUN apk update 
 
-RUN set -ex \
-    && apk add --no-cache --virtual .build-deps postgresql-dev build-base \
-    && python -m venv /env \
-    && /env/bin/pip install --upgrade pip \
-    && /env/bin/pip install --no-cache-dir -r /app/requirements.txt \
-    && runDeps="$(scanelf --needed --nobanner --recursive /env \
-    | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
-    | sort -u \
-    | xargs -r apk info --installed \
-    | sort -u)" \
-    && apk add --virtual rundeps $runDeps \
-    && apk del .build-deps
+RUN apk --no-cache add \
+    build-base \
+    python3-dev \
+    # wget dependency
+    openssl \
+    # psycopg2 dependency
+    postgresql-dev \
+    gcc \
+    musl-dev \
+    # Pillow dependencies
+    freetype-dev \
+    fribidi-dev \
+    harfbuzz-dev \
+    jpeg-dev \
+    lcms2-dev \
+    openjpeg-dev \
+    tcl-dev \
+    tiff-dev \
+    tk-dev \
+    zlib-dev
 
 
-# setup python virtual environment
-ENV VIRTUAL_ENV /__app_name__/env
-ENV PATH /env/bin:$PATH
+# Prevents Python from writing pyc files to disc
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# Prevents Python from buffering stdout and stderr
+ENV PYTHONUNBUFFERED 1
+
+
+WORKDIR /usr/src/app
+COPY ./requirements.txt .
+COPY ./my_project_name .
+
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
 
 RUN adduser -D myuser
 USER myuser
 
-ADD __app_name__ /app
-WORKDIR /app
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "__app_name__.wsgi"]
+CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "my_project_name.wsgi"]

@@ -132,3 +132,5 @@ dmypy.json
 static/
 staticfiles/
 media/
+
+compose-data/
