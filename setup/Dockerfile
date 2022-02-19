@@ -1,13 +1,17 @@
 FROM python:3.9-alpine
 
-RUN apk update 
+# Prevents Python from writing pyc files to disc
+ENV PYTHONDONTWRITEBYTECODE 1
 
-RUN apk --no-cache add \
+# Prevents Python from buffering stdout and stderr
+ENV PYTHONUNBUFFERED 1
+
+RUN apk update && apk --no-cache add --virtual build-dependencies \
     build-base \
     python3-dev \
     # wget dependency
     openssl \
-    # psycopg2 dependency
+    # psycopg2 dependencies
     postgresql-dev \
     gcc \
     musl-dev \
@@ -24,26 +28,38 @@ RUN apk --no-cache add \
     zlib-dev
 
 
-# Prevents Python from writing pyc files to disc
-ENV PYTHONDONTWRITEBYTECODE 1
-
-# Prevents Python from buffering stdout and stderr
-ENV PYTHONUNBUFFERED 1
+# create the app user
+RUN mkdir -p /home/app
+RUN addgroup -S app && adduser -S app -G app
 
 
-WORKDIR /usr/src/app
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+
+# install requirements.txt
 COPY ./requirements.txt .
-COPY ./my_project_name .
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# copy entrypoint.sh
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.sh
+RUN chmod +x  $APP_HOME/entrypoint.sh
 
 
-RUN adduser -D myuser
-USER myuser
+# copy project
+COPY ./my_project_name $APP_HOME
 
 
-EXPOSE 8000
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+USER app
+
+
+ENTRYPOINT ["/home/app/web/entrypoint.sh"]
 
 CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "my_project_name.wsgi"]

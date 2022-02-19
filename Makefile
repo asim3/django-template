@@ -57,7 +57,7 @@ run:
 
 docker:
 	sudo docker-compose config
-	sudo docker-compose up
+	sudo docker-compose up --build --remove-orphans
 
 
 shell:
