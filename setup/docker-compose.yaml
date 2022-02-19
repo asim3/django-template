@@ -1,10 +1,10 @@
 version: "3.3"
 
 services:
-  my-db-postgres:
+  postgres-compose:
     image: postgres
     restart: unless-stopped
-    container_name: my-db-postgres
+    container_name: my_project_name-db
     volumes:
       - ./compose-data/db:/var/lib/postgresql/data
     environment:
@@ -14,11 +14,11 @@ services:
 
   django-compose:
     build: .
-    container_name: django-compose
+    container_name: my_project_name-app
     ports:
       - "8000:8000"
     depends_on:
-      - my-db-postgres
+      - postgres-compose
     environment:
       - DJANGO_SECRET_KEY="top-secret"
       - DJANGO_DEBUG=True
