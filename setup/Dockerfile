@@ -6,7 +6,9 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Prevents Python from buffering stdout and stderr
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update && apk --no-cache add --virtual build-dependencies \
+COPY ./requirements.txt .
+
+RUN apk update && apk --no-cache add --virtual .build-dependencies \
     build-base \
     python3-dev \
     # wget dependency
@@ -25,7 +27,12 @@ RUN apk update && apk --no-cache add --virtual build-dependencies \
     tcl-dev \
     tiff-dev \
     tk-dev \
-    zlib-dev
+    zlib-dev \
+    && pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt \
+    && apk del --no-cache .build-dependencies \
+    # install psycopg2 dependencies
+    && apk add libpq
 
 
 # create the app user
@@ -38,11 +45,6 @@ ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
-
-
-# install requirements.txt
-COPY ./requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
 
 
 # copy entrypoint.sh
@@ -61,5 +63,3 @@ USER app
 
 
 ENTRYPOINT ["/home/app/web/entrypoint.sh"]
-
-CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "my_project_name.wsgi"]
