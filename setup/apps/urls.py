@@ -1,13 +1,22 @@
+from django.utils.translation import gettext_lazy as _
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.views.generic.base import RedirectView
 from django.conf import settings
+from rest_framework.authtoken.views import obtain_auth_token
+
+
+admin.site.site_header = _("My App")
+admin.site.site_title = _("Admin")
+admin.site.index_title = _("Controls")
+admin.site.empty_value_display = _("empty")
 
 
 urlpatterns = i18n_patterns(
     path('', include('products.urls')),
+    path('v1/auth/', obtain_auth_token),
     path('admin/', admin.site.urls),
 )
 
