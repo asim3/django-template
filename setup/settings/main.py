@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 
 from .base import *
 from .third_party.anti_spam import *
+from .third_party.rest_framework import *
 
 import os
 
@@ -21,6 +22,8 @@ INSTALLED_APPS += [
     'antispam.honeypot',
     'antispam.captcha',
     'simple_history',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE.insert(2, 'django.middleware.locale.LocaleMiddleware')
