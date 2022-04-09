@@ -18,12 +18,13 @@ ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
 
 INSTALLED_APPS += [
     'products',
-    'antispam',
-    'antispam.honeypot',
-    'antispam.captcha',
+    'user',
     'simple_history',
     'rest_framework',
     'rest_framework.authtoken',
+    'antispam',
+    'antispam.honeypot',
+    'antispam.captcha',
 ]
 
 MIDDLEWARE.insert(2, 'django.middleware.locale.LocaleMiddleware')
