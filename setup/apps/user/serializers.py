@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 class RegisterSerializer(Serializer):
-    username = CharField(max_length=150, label="User:", help_text="Name")
+    username = CharField(max_length=150, write_only=True, required=True)
     password = CharField(write_only=True, required=True)
     token = CharField(read_only=True)
 
