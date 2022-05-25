@@ -1,19 +1,11 @@
-import django_heroku
-import os
+import dj_database_url
 
 
-django_heroku.settings(locals())
+MAX_CONN_AGE = 600
 
-DEFAULT_FROM_EMAIL = "info@gmail.com"
+# Ensure STATIC_ROOT exists.
+# os.makedirs(STATIC_ROOT, exist_ok=True)
 
-EMAIL_HOST = "smtp.gmail.com"
-
-EMAIL_HOST_USER = "info@gmail.com"
-
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-EMAIL_PORT = 587
-
-EMAIL_USE_TLS = True
-
-EMAIL_TIMEOUT = 15
+DATABASES = {
+    'default': dj_database_url.config(conn_max_age=MAX_CONN_AGE, ssl_require=True)
+}

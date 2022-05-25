@@ -64,6 +64,12 @@ LOGGING = {
     },
 }
 
+LOGIN_URL = reverse_lazy('admin:login')
+
+LOGIN_REDIRECT_URL = reverse_lazy('admin:index')
+
+LOGOUT_REDIRECT_URL = reverse_lazy('admin:login')
+
 STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'static'
@@ -74,27 +80,36 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
-LANGUAGE_CODE = 'ar'
+LOCALE_PATHS = (
+    BASE_DIR / 'locale',
+)
 
-# LANGUAGE_CODE = 'en'
+# Languages
+LANGUAGE_CODE = 'ar'
 
 LANGUAGES = [
     ('ar', 'العربية'),
     ('en', 'English'),
 ]
 
-LOCALE_PATHS = (
-    BASE_DIR / 'locale',
-)
-
+# Date & Time
 TIME_ZONE = 'Asia/Riyadh'
 
 DATE_FORMAT = 'Y / m / d'
 
 DATETIME_FORMAT = 'Y / m / d P'
 
-LOGIN_URL = reverse_lazy('admin:login')
+# EMAIL
+DEFAULT_FROM_EMAIL = "info@gmail.com"
 
-LOGIN_REDIRECT_URL = reverse_lazy('admin:index')
+EMAIL_HOST = "smtp.gmail.com"
 
-LOGOUT_REDIRECT_URL = reverse_lazy('admin:login')
+EMAIL_HOST_USER = "info@gmail.com"
+
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True
+
+EMAIL_TIMEOUT = 15
