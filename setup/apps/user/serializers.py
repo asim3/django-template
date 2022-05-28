@@ -1,12 +1,13 @@
 from rest_framework.serializers import Serializer, CharField, ValidationError
-from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.forms import UserCreationForm
 
 
 class RegisterSerializer(Serializer):
     username = CharField(max_length=150, write_only=True, required=True)
     password = CharField(write_only=True, required=True)
-    token = CharField(read_only=True)
+    refresh = CharField(read_only=True)
+    access = CharField(read_only=True)
 
     def get_form(self, data):
         return UserCreationForm(data={
@@ -27,10 +28,11 @@ class RegisterSerializer(Serializer):
         form = self.get_form(validated_data)
         if form.is_valid():
             user = form.save()
-            token = Token.objects.create(user=user)
+            token_refresh = RefreshToken.for_user(user)
             return {
                 "username": user.username,
                 "password": "password",
-                "token": token.key
+                "refresh": str(token_refresh),
+                "access": str(token_refresh.access_token),
             }
         raise ValidationError(form.errors)

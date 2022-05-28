@@ -9,6 +9,7 @@ psycopg2==2.9.3
 openpyxl==3.0.7
 Pillow==8.3.1
 djangorestframework==3.13.1
+djangorestframework-simplejwt==5.2.0
 # wagtail==2.14.1
 # fpdf==1.7.2
 # qrcode==7.3
