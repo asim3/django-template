@@ -2,28 +2,21 @@
 Django Template
 
 
-## Config Vars (env)
-- `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.staging`
-- `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.production`
-- `DJANGO_SECRET_KEY`
-- `DJANGO_ALLOWED_HOSTS`
-
-
 ## Add New Django Project
 ```bash
 make init
 ```
 
 
-## Run Server
-```bash
-make
-```
-
-
 ## Install requirements.txt & Migrate
 ```bash
 make install
+```
+
+
+## Run Server
+```bash
+make
 ```
 
 
@@ -45,20 +38,25 @@ make test
 ```
 
 
+## Config Vars (env)
+- `AWS_ACCESS_KEY_ID` = `********`
+- `AWS_SECRET_ACCESS_KEY` = `********`
+- `DATABASE_URL` = `postgres://***:*****@pg.com:5432/***`
+- `DJANGO_ALLOWED_HOSTS` = `my_project_name.com,my_project_name.sa`
+- `DJANGO_SECRET_KEY` = `********`
+- `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.staging`
+- `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.production`
+
+
+
 ## Run Shell
 ```bash
 make shell
 ```
 
 
-# AWS S3
-
-## env
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-
-
-## CORS: Cross-origin resource sharing
+## AWS
+### CORS: Cross-origin resource sharing
 ```json
 [
     {
