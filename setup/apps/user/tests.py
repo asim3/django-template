@@ -16,8 +16,14 @@ from rest_framework.status import (
 
 class BaseTestCase(TestCase):
     methods_not_allowed = None
+    requires_authorization = False
 
     def get_headers(self):
+        if self.requires_authorization:
+            return {
+                "Content_Type": "application/json",
+                "HTTP_AUTHORIZATION": self.get_user_bearer_head("auth_user"),
+            }
         return {"Content_Type": "application/json"}
 
     def test_method_not_allowed(self):
@@ -25,8 +31,9 @@ class BaseTestCase(TestCase):
             for method in self.methods_not_allowed:
                 response = getattr(self.client, method)(
                     self.url, **self.get_headers())
+                message = "%s method" % method
                 self.assertEqual(response.status_code,
-                                 HTTP_405_METHOD_NOT_ALLOWED)
+                                 HTTP_405_METHOD_NOT_ALLOWED, message)
 
     def add_new_user(self, data):
         user = User.objects.create(username=data['username'])
@@ -57,19 +64,17 @@ class BaseTestCase(TestCase):
         refresh.pop("refresh")
         return refresh
 
+    def get_user_bearer_head(self, username):
+        refresh = self.get_user_token(username)
+        return "Bearer %s" % refresh.get("access")
+
 
 class LoginTest(BaseTestCase):
     """
     Test login
     """
-    url = reverse_lazy("v1-login")
+    url = reverse_lazy("v1-user-login")
     methods_not_allowed = ['get', 'put', 'patch', 'delete', 'head', 'trace']
-
-    def get_headers(self):
-        return {
-            "Content_Type": "application/json",
-            "HTTP_AUTHORIZATION": "Token %s" % self.get_user_token("testlogout"),
-        }
 
     def test_empty_request(self):
         response = self.client.post(self.url)
@@ -99,7 +104,7 @@ class RefreshTest(BaseTestCase):
     """
     Test refresh
     """
-    url = reverse_lazy("v1-refresh")
+    url = reverse_lazy("v1-user-refresh")
     methods_not_allowed = ['get', 'put', 'patch', 'delete', 'head', 'trace']
 
     def test_empty_request(self):
@@ -134,7 +139,7 @@ class RegisterTest(BaseTestCase):
     """
     Test register
     """
-    url = reverse_lazy("v1-register")
+    url = reverse_lazy("v1-user-register")
     methods_not_allowed = ['get', 'put', 'patch', 'delete', 'head', 'trace']
 
     def test_empty_request(self):
@@ -164,3 +169,26 @@ class RegisterTest(BaseTestCase):
             "user_id"), user.id)
         self.assertEqual(AccessToken(response.json()["access"]).get(
             "user_id"), user.id)
+
+
+class UserInfoTest(BaseTestCase):
+    """
+    Test user info
+    """
+    url = reverse_lazy("v1-user-info")
+    methods_not_allowed = ['post', 'put', 'patch', 'delete', 'trace']
+    requires_authorization = True
+
+    def test_success_response(self):
+        user = self.get_user("success_user")
+        headers = {
+            "Content_Type": "application/json",
+            "HTTP_AUTHORIZATION": self.get_user_bearer_head("success_user"),
+        }
+        response = self.client.get(self.url, **headers)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertEqual(response.json()["username"], user.username)
+        self.assertEqual(response.json()["first_name"], user.first_name)
+        self.assertEqual(response.json()["last_name"], user.last_name)
+        self.assertEqual(response.json()["email"], user.email)
+        self.assertEqual(response.json()["is_staff"], user.is_staff)

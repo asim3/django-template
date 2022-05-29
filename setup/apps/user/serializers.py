@@ -1,6 +1,7 @@
-from rest_framework.serializers import Serializer, CharField, ValidationError
+from rest_framework.serializers import Serializer, CharField, ValidationError, ModelSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
 class RegisterSerializer(Serializer):
@@ -36,3 +37,15 @@ class RegisterSerializer(Serializer):
                 "access": str(token_refresh.access_token),
             }
         raise ValidationError(form.errors)
+
+
+class UserInfoSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'is_staff', ]
+        depth = 1
