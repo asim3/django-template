@@ -29,6 +29,7 @@ install: venv sql-backup
 	${CD} python3 manage.py makemigrations --dry-run
 	${CD} python3 manage.py makemigrations
 	${CD} python3 manage.py migrate
+	- ${CD} python3 manage.py generateschema --file ./templates/api/openapi-schema.yaml
 	- ${CD} python3 manage.py collectstatic --noinput
 
 
