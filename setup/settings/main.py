@@ -17,8 +17,8 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
 
 INSTALLED_APPS += [
-    'products',
     'user',
+    'home',
     'rest_framework',
     'rest_framework_simplejwt',
     # 'simple_history',

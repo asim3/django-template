@@ -14,9 +14,9 @@ admin.site.empty_value_display = _("empty")
 
 
 urlpatterns = i18n_patterns(
-    path('', include('products.urls')),
     path('', include('user.urls')),
     path('admin/', admin.site.urls),
+    path('', include('home.urls')),
 )
 
 
