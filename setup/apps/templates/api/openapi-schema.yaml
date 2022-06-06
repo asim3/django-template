@@ -1,0 +1,172 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /ar/v1/user/:
+    get:
+      operationId: retrieveUserInfo
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+          description: ''
+      tags:
+      - ar
+  /ar/v1/user/login/:
+    post:
+      operationId: createTokenObtainPair
+      description: 'Takes a set of user credentials and returns an access and refresh
+        JSON web
+
+        token pair to prove the authentication of those credentials.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+      tags:
+      - ar
+  /ar/v1/user/refresh/:
+    post:
+      operationId: createTokenRefresh
+      description: 'Takes a refresh type JSON web token and returns an access type
+        JSON web
+
+        token if the refresh token is valid.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+      tags:
+      - ar
+  /ar/v1/user/register/:
+    post:
+      operationId: createRegister
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+      tags:
+      - ar
+components:
+  schemas:
+    UserInfo:
+      type: object
+      properties:
+        username:
+          type: string
+          description: "\u0645\u0637\u0644\u0648\u0628. 150 \u0631\u0645\u0632\u0627\
+            \u064B \u0623\u0648 \u0623\u0642\u0644\u060C \u0645\u0643\u0648\u0646\u0629\
+            \ \u0645\u0646 \u062D\u0631\u0648\u0641 \u0648\u0623\u0631\u0642\u0627\
+            \u0645 \u0648 @/./+/-/_ \u0641\u0642\u0637"
+          pattern: ^[\w.@+-]+\z
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        is_staff:
+          type: boolean
+          description: "\u064A\u062D\u062F\u062F \u0645\u0627 \u0625\u0630\u0627 \u0643\
+            \u0627\u0646 \u064A\u0645\u0643\u0646 \u0644\u0644\u0645\u0633\u062A\u062E\
+            \u062F\u0645 \u0627\u0644\u062F\u062E\u0648\u0644 \u0625\u0644\u0649 \u0645\
+            \u0648\u0642\u0639 \u0627\u0644\u0625\u062F\u0627\u0631\u0629 \u0647\u0630\
+            \u0627."
+      required:
+      - username
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - username
+      - password
+    TokenRefresh:
+      type: object
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+          readOnly: true
+      required:
+      - refresh
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+        refresh:
+          type: string
+          readOnly: true
+        access:
+          type: string
+          readOnly: true
+      required:
+      - username
+      - password
