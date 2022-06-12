@@ -6,7 +6,7 @@ from backends.storages import (
 )
 
 
-class ActionsTest(TestCase):
+class StorageTest(TestCase):
     def test_public_media(self):
         actual = PublicMediaStorage()
         self.assertEqual(actual.location, "media/public")
