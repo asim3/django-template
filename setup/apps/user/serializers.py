@@ -3,7 +3,11 @@ from rest_framework.serializers import Serializer, CharField, ValidationError, M
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from backends.utils import generate_OTP_key, clean_arabic_digits, send_sms_message
+from backends.utils import (
+    clean_phone_number,
+    generate_OTP_key,
+    send_sms_message,
+)
 
 from .models import OneTimePassword
 
@@ -55,7 +59,7 @@ class UserInfoSerializer(ModelSerializer):
         depth = 1
 
 
-class OneTimePasswordSerializer(ModelSerializer):
+class CreateOneTimePasswordSerializer(ModelSerializer):
 
     class Meta:
         model = OneTimePassword
@@ -63,27 +67,15 @@ class OneTimePasswordSerializer(ModelSerializer):
         depth = 1
 
     def validate_phone(self, value):
-        phone = clean_arabic_digits(value)
+        phone = clean_phone_number(value)
         if not phone.isdigit():
             raise ValidationError(_("This is not a valid phone"))
-        if phone.startswith("+"):
-            phone = phone[1:]
-        if phone.startswith("00"):
-            phone = phone[2:]
-        if phone.startswith("05"):
-            phone = "966" + phone[:-9]
-        if phone.startswith("5"):
-            phone = "966" + phone[:-9]
-        return phone
-
-    def validate(self, data):
-        phone = data.get('phone')
         try:
             User.objects.get(profile__phone=phone)
         except User.DoesNotExist:
             raise ValidationError(
                 _("This phone number is not registered"))
-        return data
+        return phone
 
     def create(self, validated_data):
         instance = super().create(validated_data)

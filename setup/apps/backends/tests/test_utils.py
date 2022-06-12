@@ -1,9 +1,11 @@
 from django.test import TestCase
 from django.conf import settings
 from backends.utils import (
-    generate_random_key,
-    generate_OTP_key,
+    clean_phone_number,
     clean_arabic_digits,
+    generate_random_key,
+    generate_random_name,
+    generate_OTP_key,
     send_sms_message,
 )
 
@@ -14,9 +16,33 @@ class UtilsTest(TestCase):
         self.assertEqual(type(generate_random_key()), str)
         self.assertEqual(len(generate_random_key(length=50)), 50)
 
+    def test_generate_random_name(self):
+        self.assertEqual(len(generate_random_name()), 10)
+        self.assertEqual(type(generate_random_name()), str)
+        self.assertEqual(len(generate_random_name(length=50)), 50)
+
     def test_generate_OTP_key(self):
         self.assertEqual(type(generate_OTP_key()), str)
         self.assertEqual(len(generate_OTP_key()), settings.OTP_MAX_LENGTH)
+
+    def test_clean_saudi_phone_number(self):
+        self.assertEqual(clean_phone_number("+966500"), "966500")
+        self.assertEqual(clean_phone_number("966500"), "966500")
+        self.assertEqual(clean_phone_number("0500"), "966500")
+        self.assertEqual(clean_phone_number("512345678"), "966512345678")
+        self.assertEqual(clean_phone_number("512345678"), "966512345678")
+
+    def test_clean_other_phone_number(self):
+        self.assertEqual(clean_phone_number("5500"), "5500")
+        self.assertEqual(clean_phone_number("66500"), "66500")
+        self.assertEqual(clean_phone_number("001500"), "1500")
+        self.assertEqual(clean_phone_number("+1500"), "1500")
+        self.assertEqual(clean_phone_number("1500"), "1500")
+        self.assertEqual(clean_phone_number("52345678"), "52345678")
+        self.assertEqual(clean_phone_number("5234567890"), "5234567890")
+        self.assertEqual(clean_phone_number("12Abc345"), "12Abc345")
+        self.assertEqual(clean_phone_number("xyz"), "xyz")
+        self.assertEqual(clean_phone_number("إختبار"), "إختبار")
 
     def test_clean_arabic_digits(self):
         self.assertEqual(clean_arabic_digits("0123456789"), "0123456789")

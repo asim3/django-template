@@ -13,6 +13,12 @@ def generate_random_key(characters=None, length=100):
     return ''.join(random.choices(characters, k=length))
 
 
+def generate_random_name(characters=None, length=10):
+    if characters is None:
+        characters = string.ascii_lowercase
+    return generate_random_key(characters, length)
+
+
 def generate_OTP_key(characters=string.digits, length=settings.OTP_MAX_LENGTH):
     return generate_random_key(characters, length)
 
@@ -26,6 +32,19 @@ def clean_arabic_digits(data):
         else:
             new_data += str(x)
     return new_data
+
+
+def clean_phone_number(phone):
+    phone = clean_arabic_digits(phone)
+    if phone.startswith("+"):
+        phone = phone[1:]
+    if phone.startswith("00"):
+        phone = phone[2:]
+    if phone.startswith("05"):
+        phone = "966" + phone[1:]
+    if phone.startswith("5") and len(phone) == 9:
+        phone = "966" + phone[-9:]
+    return phone
 
 
 def send_sms_message(text):

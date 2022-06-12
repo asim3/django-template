@@ -4,7 +4,7 @@ from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from .serializers import (
     RegisterSerializer,
     UserInfoSerializer,
-    OneTimePasswordSerializer,
+    CreateOneTimePasswordSerializer,
 )
 
 
@@ -23,4 +23,4 @@ class UserInfoAPIView(RetrieveAPIView):
 
 class OneTimePasswordView(CreateAPIView):
     permission_classes = [AllowAny]
-    serializer_class = OneTimePasswordSerializer
+    serializer_class = CreateOneTimePasswordSerializer

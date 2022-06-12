@@ -15,7 +15,7 @@ from user.models import OneTimePassword
 from .base import BaseTestCase
 
 
-class OneTimePasswordTest(BaseTestCase):
+class OneTimePasswordModelTest(BaseTestCase):
     """
     Test OneTimePassword Model
     """
@@ -45,7 +45,7 @@ class OneTimePasswordTest(BaseTestCase):
         self.assertEqual(OneTimePassword.objects.count(), 2)
 
 
-class OneTimePasswordTest(BaseTestCase):
+class OneTimePasswordViewTest(BaseTestCase):
     """
     Test One Time Password View
     """
@@ -63,9 +63,24 @@ class OneTimePasswordTest(BaseTestCase):
         data = {"phone": "12321"}
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        error_text = response.json().get("non_field_errors")[0]
+        error_text = response.json().get("phone")[0]
         self.assertEqual(error_text, _("This phone number is not registered"))
         self.assertEqual(OneTimePassword.objects.count(), 0)
+
+    def test_OTP_duplicate_phone(self):
+        self.get_user("otp-user1", phone="966512345678")
+        self.get_user("otp-user2", phone="966587654322")
+        self.get_user("otp-user3", phone="966587654323")
+        response = self.client.post(self.url, data={"phone": "966512345678"})
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        response = self.client.post(self.url, data={"phone": "966587654322"})
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        response = self.client.post(self.url, data={"phone": "966587654323"})
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        response = self.client.post(self.url, data={"phone": "966512345678"})
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertIn('phone', response.json().keys())
+        self.assertEqual(OneTimePassword.objects.count(), 3)
 
     def test_success_response(self):
         self.get_user("otp-user1", phone="966512345678")
@@ -84,3 +99,27 @@ class OneTimePasswordTest(BaseTestCase):
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_201_CREATED)
         self.assertEqual(OneTimePassword.objects.count(), 2)
+
+    def test_clean_phone_number(self):
+        phone_list = [
+            ("0512345678", "966512345678"),
+            ("587654321", "966587654321"),
+            ("966500", "966500"),
+            ("0503", "966503"),
+            ("5123456789", "5123456789"),
+            ("51234567", "51234567"),
+            ("12345678", "12345678"),
+            ("+966504", "966504"),
+        ]
+        for actual, expected in phone_list:
+            self.get_user(phone=expected)
+            response = self.client.post(self.url, data={"phone": actual})
+            self.assertEqual(
+                response.status_code,
+                HTTP_201_CREATED,
+                msg=actual)
+            try:
+                otp = OneTimePassword.objects.get(phone=expected)
+                self.assertEqual(otp.phone, expected)
+            except OneTimePassword.DoesNotExist:
+                self.assertEqual(actual + "x", expected)
