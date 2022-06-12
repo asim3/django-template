@@ -45,6 +45,31 @@ paths:
           description: ''
       tags:
       - ar
+  /ar/v1/user/otp/:
+    post:
+      operationId: createOneTimePassword
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OneTimePassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OneTimePassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OneTimePassword'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OneTimePassword'
+          description: ''
+      tags:
+      - ar
   /ar/v1/user/refresh/:
     post:
       operationId: createTokenRefresh
@@ -141,6 +166,14 @@ components:
       required:
       - username
       - password
+    OneTimePassword:
+      type: object
+      properties:
+        phone:
+          type: string
+          maxLength: 15
+      required:
+      - phone
     TokenRefresh:
       type: object
       properties:

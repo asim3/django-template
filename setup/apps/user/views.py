@@ -1,7 +1,11 @@
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 
-from .serializers import RegisterSerializer, UserInfoSerializer
+from .serializers import (
+    RegisterSerializer,
+    UserInfoSerializer,
+    OneTimePasswordSerializer,
+)
 
 
 class RegisterAPIView(CreateAPIView):
@@ -15,3 +19,8 @@ class UserInfoAPIView(RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class OneTimePasswordView(CreateAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = OneTimePasswordSerializer
