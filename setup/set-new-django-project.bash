@@ -69,14 +69,6 @@ remove-setup-files() {
 }
 
 
-commit-and-push() {
-	code .
-	git add .
-	git commit -m "setting up a new Django project"
-	git push origin main 
-}
-
-
 start-django-project
 update-project-name
 setup-django-settings
@@ -85,8 +77,3 @@ setup-kubernetes
 copy-django-apps
 setup-heroku
 remove-setup-files
-
-repository_name=$(basename $(pwd))
-if [ ! "$repository_name" = "django-template" ]; then
-	commit-and-push
-fi
