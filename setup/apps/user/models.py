@@ -19,10 +19,8 @@ class Profile(Model):
 
 class OneTimePassword(Model):
     phone = CharField(_("phone"), max_length=15, unique=True, db_index=True)
-    key = CharField(
-        _("key"), max_length=settings.OTP_MAX_LENGTH, unique=True, db_index=True)
+    key = CharField(_("key"), max_length=settings.OTP_MAX_LENGTH)
     created_on = DateTimeField(_("created on"), auto_now_add=True)
-    is_verified = BooleanField(_("is verified"), default=False)
 
     def is_expired(self):
         if self.created_on and self.created_on < timezone.now():

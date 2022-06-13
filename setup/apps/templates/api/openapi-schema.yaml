@@ -47,26 +47,51 @@ paths:
       - ar
   /ar/v1/user/otp/:
     post:
-      operationId: createOneTimePassword
+      operationId: createCreateOneTimePassword
       description: ''
       parameters: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OneTimePassword'
+              $ref: '#/components/schemas/CreateOneTimePassword'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/OneTimePassword'
+              $ref: '#/components/schemas/CreateOneTimePassword'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/OneTimePassword'
+              $ref: '#/components/schemas/CreateOneTimePassword'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OneTimePassword'
+                $ref: '#/components/schemas/CreateOneTimePassword'
+          description: ''
+      tags:
+      - ar
+  /ar/v1/user/otp/validate/:
+    post:
+      operationId: createValidateOneTimePassword
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateOneTimePassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ValidateOneTimePassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ValidateOneTimePassword'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateOneTimePassword'
           description: ''
       tags:
       - ar
@@ -166,7 +191,7 @@ components:
       required:
       - username
       - password
-    OneTimePassword:
+    CreateOneTimePassword:
       type: object
       properties:
         phone:
@@ -174,6 +199,20 @@ components:
           maxLength: 15
       required:
       - phone
+    ValidateOneTimePassword:
+      type: object
+      properties:
+        phone:
+          type: string
+          writeOnly: true
+          maxLength: 15
+        token:
+          type: string
+          writeOnly: true
+          maxLength: 4
+      required:
+      - phone
+      - token
     TokenRefresh:
       type: object
       properties:
