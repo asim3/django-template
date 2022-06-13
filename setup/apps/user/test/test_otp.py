@@ -149,4 +149,6 @@ class ValidateOneTimePasswordViewTest(BaseTestCase):
         data.update(token=otp.key)
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn('refresh', response.json().keys())
+        self.assertIn('access', response.json().keys())
         self.assertEqual(OneTimePassword.objects.count(), 0)
