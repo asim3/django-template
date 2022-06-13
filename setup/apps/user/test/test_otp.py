@@ -1,5 +1,5 @@
 from django.utils.translation import gettext_lazy as _
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
@@ -45,9 +45,9 @@ class OneTimePasswordModelTest(BaseTestCase):
         self.assertEqual(OneTimePassword.objects.count(), 2)
 
 
-class OneTimePasswordViewTest(BaseTestCase):
+class CreateOneTimePasswordViewTest(BaseTestCase):
     """
-    Test One Time Password View
+    Test Create One Time Password View
     """
     url = reverse_lazy("v1-user-otp-login")
     methods_not_allowed = ['get', 'put', 'patch', 'delete', 'head', 'trace']
@@ -123,3 +123,30 @@ class OneTimePasswordViewTest(BaseTestCase):
                 self.assertEqual(otp.phone, expected)
             except OneTimePassword.DoesNotExist:
                 self.assertEqual(actual + "x", expected)
+
+
+class ValidateOneTimePasswordViewTest(BaseTestCase):
+    """
+    Test Validate One Time Password View
+    """
+    url = reverse_lazy("v1-user-otp-validate")
+    methods_not_allowed = ['get', 'put', 'patch', 'delete', 'head', 'trace']
+
+    def test_empty_request(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertIn('phone', response.json().keys())
+        self.assertEqual(OneTimePassword.objects.count(), 0)
+
+    def test_success_response(self):
+        self.get_user("otp-user1", phone="966512345678")
+        data = {"phone": "966512345678"}
+        response = self.client.post(reverse("v1-user-otp-login"), data=data)
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        self.assertEqual(OneTimePassword.objects.count(), 1)
+        # validate token
+        otp = OneTimePassword.objects.first()
+        data.update(token=otp.key)
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertEqual(OneTimePassword.objects.count(), 0)

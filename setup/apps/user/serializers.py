@@ -3,8 +3,10 @@ from rest_framework.serializers import Serializer, CharField, ValidationError, M
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.conf import settings
 from backends.utils import (
     clean_phone_number,
+    clean_arabic_digits,
     generate_OTP_key,
     send_sms_message,
 )
@@ -83,3 +85,21 @@ class CreateOneTimePasswordSerializer(ModelSerializer):
         instance.save()
         send_sms_message("Your OTP is: " + instance.key)
         return instance
+
+
+class ValidateOneTimePasswordSerializer(Serializer):
+    phone = CharField(max_length=15, write_only=True, required=True)
+    token = CharField(max_length=settings.OTP_MAX_LENGTH,
+                      write_only=True, required=True)
+
+    def validate_phone(self, value):
+        phone = clean_phone_number(value)
+        if not phone.isdigit():
+            raise ValidationError(_("This is not a valid phone"))
+        return phone
+
+    def validate_token(self, value):
+        otp_token = clean_arabic_digits(value)
+        if not otp_token.isdigit():
+            raise ValidationError(_("This is not a valid token"))
+        return otp_token
