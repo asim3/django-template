@@ -83,7 +83,7 @@ class CreateOneTimePasswordSerializer(ModelSerializer):
         instance = super().create(validated_data)
         instance.key = generate_OTP_key()
         instance.save()
-        send_sms_message("Your OTP is: " + instance.key)
+        send_sms_message(_("Your OTP is: ") + instance.key)
         return instance
 
 

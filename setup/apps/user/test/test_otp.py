@@ -14,6 +14,7 @@ from rest_framework.status import (
 
 from user.models import OneTimePassword
 from backends.utils import clean_phone_number
+from backends.tests.mock_patch import patch, mocked_send_sms_message
 
 from .base import BaseTestCase
 
@@ -60,6 +61,7 @@ class OneTimePasswordModelTest(BaseTestCase):
         self.assertEqual(OneTimePassword.objects.count(), 1)
 
 
+@patch("user.serializers.send_sms_message", mocked_send_sms_message)
 class CreateOneTimePasswordViewTest(BaseTestCase):
     """
     Test Create One Time Password View
