@@ -176,8 +176,9 @@ class ValidateOneTimePasswordViewTest(BaseTestCase):
         data = {"phone": "12321", "token": "1111"}
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertIn('phone', response.json().keys())
-        self.assertIn('token', response.json().keys())
+        error_text = response.json().get("non_field_errors")[0]
+        self.assertEqual(error_text, _(
+            "The phone or token you entered are not correct"))
         self.assertEqual(OneTimePassword.objects.count(), len(self.users_list))
 
     def test_token_not_found(self):
@@ -185,8 +186,9 @@ class ValidateOneTimePasswordViewTest(BaseTestCase):
         data = {"phone": "0503", "token": "0503"}
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertIn('phone', response.json().keys())
-        self.assertIn('token', response.json().keys())
+        error_text = response.json().get("non_field_errors")[0]
+        self.assertEqual(error_text, _(
+            "The phone or token you entered are not correct"))
         self.assertEqual(OneTimePassword.objects.count(), len(self.users_list))
 
     def test_success_response(self):

@@ -103,3 +103,17 @@ class ValidateOneTimePasswordSerializer(Serializer):
         if not otp_token.isdigit():
             raise ValidationError(_("This is not a valid token"))
         return otp_token
+
+    def validate(self, attrs):
+        phone = attrs.get("phone")
+        otp_token = attrs.get("token")
+        try:
+            otp = OneTimePassword.objects.get(phone=phone, key=otp_token)
+            if otp.is_datetime_valid():
+                otp.delete()
+                return attrs
+        except OneTimePassword.DoesNotExist:
+            raise ValidationError(
+                _("The phone or token you entered are not correct"))
+        raise ValidationError(
+            _("The phone or token you entered are not correct"))
