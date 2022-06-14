@@ -1,4 +1,5 @@
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from django.urls import reverse_lazy
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.status import (
@@ -21,6 +22,7 @@ class OneTimePasswordModelTest(BaseTestCase):
     """
     Test OneTimePassword Model
     """
+    expired_time = timezone.now() - timezone.timedelta(minutes=6)
 
     def test_add(self):
         phone = "966512345678"
@@ -34,18 +36,28 @@ class OneTimePasswordModelTest(BaseTestCase):
         OneTimePassword.objects.create(phone=phone_2, key="5678")
         self.assertEqual(OneTimePassword.objects.count(), 2)
 
-    def xtest_delete_old(self):
-        # TODO: fix this
-        OneTimePassword.objects.create(phone="966512345678", key="1234")
-        OneTimePassword.objects.create(phone="966587654321", key="5555")
-        OneTimePassword.objects.create(phone="001", key="1", is_verified=True)
-        OneTimePassword.objects.create(phone="002", key="2", is_verified=True)
-        OneTimePassword.objects.create(phone="003", key="3", is_verified=True)
-        OneTimePassword.objects.create(phone="004", key="4", is_verified=True)
+    def test_is_datetime_valid(self):
+        OneTimePassword.objects.create(phone="9661", key="1234")
+        OneTimePassword.objects.create(phone="9662", key="1234")
+        OneTimePassword.objects.create(phone="9663", key="1234")
+        OneTimePassword.objects.create(phone="9664", key="1234")
+        OneTimePassword.objects.all().update(created_on=self.expired_time)
+        OneTimePassword.objects.create(phone="9665", key="1234")
+        self.assertEqual(OneTimePassword.objects.count(), 5)
+        self.assertFalse(OneTimePassword.objects.first().is_datetime_valid())
+        self.assertTrue(OneTimePassword.objects.last().is_datetime_valid())
+        self.assertEqual(OneTimePassword.objects.count(), 1)
 
-        self.assertEqual(OneTimePassword.objects.count(), 6)
-        OneTimePassword.objects.filter(is_verified=True).delete()
-        self.assertEqual(OneTimePassword.objects.count(), 2)
+    def test_delete_expired(self):
+        OneTimePassword.objects.create(phone="9661", key="1234")
+        OneTimePassword.objects.create(phone="9662", key="1234")
+        OneTimePassword.objects.create(phone="9663", key="1234")
+        OneTimePassword.objects.create(phone="9664", key="1234")
+        OneTimePassword.objects.all().update(created_on=self.expired_time)
+        OneTimePassword.objects.create(phone="9665", key="1234")
+        self.assertEqual(OneTimePassword.objects.count(), 5)
+        OneTimePassword.delete_expired()
+        self.assertEqual(OneTimePassword.objects.count(), 1)
 
 
 class CreateOneTimePasswordViewTest(BaseTestCase):

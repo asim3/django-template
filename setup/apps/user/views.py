@@ -52,9 +52,9 @@ class ValidateOneTimePasswordView(GenericAPIView):
         otp_token = validated_data.get("token")
         try:
             otp = OneTimePassword.objects.get(phone=phone, key=otp_token)
-            otp.delete()
-            # TODO: delete all old otp
-            return True
+            if otp.is_datetime_valid():
+                otp.delete()
+                return True
         except OneTimePassword.DoesNotExist:
             return False
 

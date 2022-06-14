@@ -22,7 +22,14 @@ class OneTimePassword(Model):
     key = CharField(_("key"), max_length=settings.OTP_MAX_LENGTH)
     created_on = DateTimeField(_("created on"), auto_now_add=True)
 
-    def is_expired(self):
-        if self.created_on and self.created_on < timezone.now():
-            return False
-        return True
+    def is_datetime_valid(self):
+        expired_date = timezone.now() - timezone.timedelta(minutes=5)
+        if self.created_on and expired_date < self.created_on:
+            return True
+        self.delete_expired()
+        return False
+
+    @classmethod
+    def delete_expired(cls):
+        expired_date = timezone.now() - timezone.timedelta(minutes=5)
+        cls.objects.filter(created_on__lt=expired_date).delete()
