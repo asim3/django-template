@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy as _
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
@@ -11,6 +12,7 @@ from rest_framework.status import (
 )
 
 from user.models import OneTimePassword
+from backends.utils import clean_phone_number
 
 from .base import BaseTestCase
 
@@ -132,24 +134,58 @@ class ValidateOneTimePasswordViewTest(BaseTestCase):
     """
     url = reverse_lazy("v1-user-otp-validate")
     methods_not_allowed = ['get', 'put', 'patch', 'delete', 'head', 'trace']
+    users_list = [
+        {"phone": "0512345678", "token": "0001"},
+        {"phone": "587654321", "token": "0002"},
+        {"phone": "966500", "token": "3344"},
+        {"phone": "0503", "token": "5566"},
+        {"phone": "5123456789", "token": "7777"},
+        {"phone": "51234567", "token": "8888"},
+        {"phone": "12345678", "token": "9999"},
+        {"phone": "+966504", "token": "1000"},
+    ]
+
+    def add_multiple_otp(self):
+        for item in self.users_list:
+            phone = clean_phone_number(item["phone"])
+            self.get_user(phone=phone)
+            OneTimePassword.objects.create(
+                phone=phone, key=item["token"])
 
     def test_empty_request(self):
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertIn('phone', response.json().keys())
+        self.assertIn('token', response.json().keys())
         self.assertEqual(OneTimePassword.objects.count(), 0)
 
-    def test_success_response(self):
-        self.get_user("otp-user1", phone="966512345678")
-        data = {"phone": "966512345678"}
-        response = self.client.post(reverse("v1-user-otp-login"), data=data)
-        self.assertEqual(response.status_code, HTTP_201_CREATED)
-        self.assertEqual(OneTimePassword.objects.count(), 1)
-        # validate token
-        otp = OneTimePassword.objects.first()
-        data.update(token=otp.key)
+    def test_phone_not_found(self):
+        self.add_multiple_otp()
+        data = {"phone": "12321", "token": "1111"}
         response = self.client.post(self.url, data=data)
-        self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertIn('refresh', response.json().keys())
-        self.assertIn('access', response.json().keys())
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertIn('phone', response.json().keys())
+        self.assertIn('token', response.json().keys())
+        self.assertEqual(OneTimePassword.objects.count(), len(self.users_list))
+
+    def test_token_not_found(self):
+        self.add_multiple_otp()
+        data = {"phone": "0503", "token": "0503"}
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertIn('phone', response.json().keys())
+        self.assertIn('token', response.json().keys())
+        self.assertEqual(OneTimePassword.objects.count(), len(self.users_list))
+
+    def test_success_response(self):
+        self.add_multiple_otp()
+        for user_id, data in enumerate(self.users_list, 1):
+            response = self.client.post(self.url, data=data)
+            self.assertEqual(response.status_code, HTTP_200_OK, msg=data)
+            refresh = response.json().get("refresh")
+            access = response.json().get("access")
+            self.assertEqual(RefreshToken(refresh).get("user_id"), user_id)
+            self.assertEqual(AccessToken(access).get("user_id"), user_id)
+            self.assertEqual(
+                OneTimePassword.objects.count(), len(self.users_list) - user_id)
         self.assertEqual(OneTimePassword.objects.count(), 0)

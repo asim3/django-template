@@ -43,11 +43,11 @@ class ValidateOneTimePasswordView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if self.is_valid_OTP(serializer.validated_data):
+        if self.is_otp_token_valid(serializer.validated_data):
             return self.data_valid(serializer.validated_data)
         return self.data_invalid()
 
-    def is_valid_OTP(self, validated_data):
+    def is_otp_token_valid(self, validated_data):
         phone = validated_data.get("phone")
         otp_token = validated_data.get("token")
         try:
@@ -56,8 +56,7 @@ class ValidateOneTimePasswordView(GenericAPIView):
             # TODO: delete all old otp
             return True
         except OneTimePassword.DoesNotExist:
-            raise ValueError(
-                _("The phone or token you entered are not correct"))
+            return False
 
     def data_invalid(self):
         error_data = {
