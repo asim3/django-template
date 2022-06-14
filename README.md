@@ -2,40 +2,18 @@
 Django Template
 
 
-## Add New Django Project
-```bash
-make init
-```
+| Command               | Function                           |
+| --------------------- | ---------------------------------- |
+| `make init`           | Add New Django Project             |
+| `make install`        | Install requirements.txt & Migrate |
+| `make user`           | Add Super User                     |
+| `make new app=my_app` | Add New Django App                 |
+| `make`                | Run Server                         |
+| `make test`           | Run Tests                          |
+| `make shell`          | Run Shell                          |
 
 
-## Install requirements.txt & Migrate
-```bash
-make install
-```
-
-
-## Run Server
-```bash
-make
-```
-
-
-## Add Super User
-```bash
-make user
-```
-
-
-## Add New Django App
-```bash
-make new app=my_app
-```
-
-
-## Run Tests
-```bash
-make test
-```
+---
 
 
 ## Config Vars (env)
@@ -46,13 +24,6 @@ make test
 - `DJANGO_SECRET_KEY` = `********`
 - `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.staging`
 - `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.production`
-
-
-
-## Run Shell
-```bash
-make shell
-```
 
 
 ## AWS
@@ -75,10 +46,8 @@ make shell
 ```
 
 
-# anti spam
+## anti spam (re Captcha)
 [reCaptcha](https://www.google.com/recaptcha/admin)
-
-
-## env
+Config Vars (env) : 
 - `RECAPTCHA_SITEKEY`
 - `RECAPTCHA_SECRETKEY`
