@@ -1,9 +1,11 @@
+from datetime import timedelta
+
+import os
+
+
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
     ),
 
     # authentication
@@ -25,7 +27,23 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/hour',
-        'user': '1000/hour',
-    }
+        'anon': '200/day',
+        'user': '3000/hour',
+    },
+
+    # pagination
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 30,
+}
+
+
+SIMPLE_JWT = {
+    "SIGNING_KEY": os.environ.get("REST_SIGNING_KEY"),
+    "ALGORITHM": "HS512",
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+
+    # 'UPDATE_LAST_LOGIN': True,
+    # 'USER_ID_FIELD': 'username',
+    # 'USER_ID_CLAIM': 'my_user_name',
 }

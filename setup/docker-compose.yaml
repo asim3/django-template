@@ -25,6 +25,7 @@ services:
       - DJANGO_SECRET_KEY="top-secret"
       - DJANGO_DEBUG=True
       - DJANGO_ALLOWED_HOSTS=*,127.0.0.1,localhost
+      - REST_SIGNING_KEY="rest-top-secret"
       - SQL_ENGINE=django.db.backends.postgresql
       - SQL_DATABASE=postgres
       - SQL_USER=postgres

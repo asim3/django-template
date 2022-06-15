@@ -24,6 +24,7 @@ Django Template
 - `DJANGO_SECRET_KEY` = `********`
 - `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.staging`
 - `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.production`
+- `REST_SIGNING_KEY` = `********`
 
 
 ## AWS
@@ -48,6 +49,6 @@ Django Template
 
 ## anti spam (re Captcha)
 [reCaptcha](https://www.google.com/recaptcha/admin)
-Config Vars (env) : 
+env : 
 - `RECAPTCHA_SITEKEY`
 - `RECAPTCHA_SECRETKEY`

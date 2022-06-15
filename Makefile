@@ -7,9 +7,10 @@ PROJECT_NAME=my_project_name
 CD=${ACTIVATE} cd ./${PROJECT_NAME} &&
 
 
-export DJANGO_SECRET_KEY="top-secret"
+export DJANGO_SECRET_KEY=top-secret
 export DJANGO_DEBUG=True
 export DJANGO_ALLOWED_HOSTS=*,127.0.0.1,localhost
+export REST_SIGNING_KEY=rest-top-secret
 
 
 main: run
