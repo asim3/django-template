@@ -1,7 +1,11 @@
 from django.conf import settings
-
 import string
 import random
+import requests
+
+
+class SMS_Error(Exception):
+    pass
 
 
 def generate_random_key(characters=None, length=100):
@@ -47,6 +51,20 @@ def clean_phone_number(phone):
     return phone
 
 
-def send_sms_message(text):
-    # print(text)
-    pass
+def send_sms_message(phone, text, raise_exception=False):
+    data = {
+        "bearerTokens": settings.SMS_TOKEN,
+        "sender": settings.SMS_DEFAULT_FROM,
+        "recipients": str(phone),
+        "body": str(text),
+    }
+    response = requests.post(settings.SMS_BASE_URL, data=data)
+    if response.status_code == 200:
+        accepted = response.json().get("accepted")
+        if accepted[1:-2] == phone:
+            return True
+    if raise_exception:
+        raise SMS_Error("Error while sending SMS. "
+                        f"status code: [{response.status_code}] "
+                        f"response: {response.text}")
+    return False

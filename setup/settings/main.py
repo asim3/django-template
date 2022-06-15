@@ -116,4 +116,11 @@ EMAIL_TIMEOUT = 15
 
 # OTP
 OTP_MAX_LENGTH = 4
+
 OTP_DEFAULT_AGE = 60 * 5
+
+SMS_BASE_URL = "https://api.taqnyat.sa/v1/messages"
+
+SMS_TOKEN = "******"
+
+SMS_DEFAULT_FROM = "django"

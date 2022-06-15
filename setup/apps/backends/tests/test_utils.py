@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.conf import settings
-from backends.tests.mock_patch import patch, mocked_send_sms_message
+from backends.tests.mock_patch import patch, MockedSMSRequests
 from backends.utils import (
     clean_phone_number,
     clean_arabic_digits,
@@ -11,7 +11,7 @@ from backends.utils import (
 )
 
 
-@patch("backends.tests.test_utils.send_sms_message", mocked_send_sms_message)
+@patch("backends.utils.requests", MockedSMSRequests)
 class UtilsTest(TestCase):
     def test_generate_random_key(self):
         self.assertEqual(len(generate_random_key()), 100)
@@ -61,7 +61,12 @@ class UtilsTest(TestCase):
         self.assertEqual(clean_arabic_digits(
             "٠١٢٣٤ test ٥٦٧٨٩"), "01234 test 56789")
 
-    def test_send_sms_message(self):
+    def test_send_sms_message_error(self):
         with self.assertRaises(TypeError):
             send_sms_message()
-        self.assertIsNone(send_sms_message(""))
+        with self.assertRaises(TypeError):
+            send_sms_message("phone")
+
+    def test_send_sms_message(self):
+        self.assertTrue(send_sms_message("966500", "text"))
+        self.assertFalse(send_sms_message("phone", "text"))
