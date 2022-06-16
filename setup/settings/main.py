@@ -21,6 +21,7 @@ INSTALLED_APPS += [
     'home',
     'rest_framework',
     'rest_framework_simplejwt',
+    'captcha',
     # 'simple_history',
     # 'antispam',
     # 'antispam.honeypot',
