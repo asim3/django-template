@@ -45,10 +45,3 @@ Django Template
     }
 ]
 ```
-
-
-## anti spam (re Captcha)
-[reCaptcha](https://www.google.com/recaptcha/admin)
-env : 
-- `RECAPTCHA_SITEKEY`
-- `RECAPTCHA_SECRETKEY`
