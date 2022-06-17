@@ -8,12 +8,12 @@
 {% include "base/head.html" %}
 
 {% if LANGUAGE_CODE|slice:":2" == 'ar' %}
-  <body style="direction: rtl!important;text-align: right!important;">
+  <body class="bg-color-gradient" style="direction: rtl!important;text-align: right!important;">
 {% else %}
-  <body style="direction: ltr!important;text-align: left!important;">
+  <body class="bg-color-gradient" style="direction: ltr!important;text-align: left!important;">
 {% endif %}
 
-    <nav class="navbar navbar-expand-lg bg-color-header text-color-header">
+    <nav class="navbar navbar-expand-lg text-color-header">
         
         {% include "base/header.html" %}
 
@@ -48,7 +48,7 @@
 
 
 
-    <footer class="bg-color-header text-color-header py-5">
+    <footer class="text-color-header py-5">
 
         {% include "base/footer.html" %}
     

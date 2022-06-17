@@ -2,7 +2,8 @@
     --color-title: #5E5958;
     --color-main: #707070;
     --color-border: #707070;
-    --color-background: #C6CAD0;
+    --color-background: #3163af;
+    --color-background-2: #73a0e4;
     --color-header-text: #EDEDED;
     --color-header-background: #4F7086;
     --color-special: #DEB194;
@@ -16,7 +17,8 @@
     font-family: main-font-bold, TimesNewRoman, sans-serif;
 }
 
-head, body {
+head,
+body {
     width: 100vw;
     position: relative;
     overflow-x: hidden;
@@ -24,64 +26,54 @@ head, body {
 
 body {
     font-family: main-font-regular, TimesNewRoman, sans-serif;
-    background-color: var(--color-background);
+    background: var(--color-background);
 }
 
-input, button, submit { 
+input,
+button,
+submit {
     border: none;
 }
 
-a, a:hover {
-    text-decoration: none!important;
+a,
+a:hover {
+    text-decoration: none !important;
     color: inherit !important;
     cursor: pointer;
 }
 
-label {
-	position: absolute !important;
-	width: 1px !important;
-	height: 1px !important;
-	padding: 0 !important;
-	margin: -1px !important;
-	overflow: hidden !important;
-	clip: rect(0,0,0,0) !important;
-	white-space: nowrap !important;
-	border: 0 !important;
-}
-
-input[type="text"], input[type="email"], select {
-	display: block;
-	width: 100%;
-	padding: .375rem 2.25rem .375rem .75rem;
-	-moz-padding-start: calc(0.75rem - 3px);
-	font-size: 1rem;
-	font-weight: 400;
-	line-height: 1.5;
-	color: #212529;
-    background: linear-gradient(0deg, var(--color-special) 50%, rgba(255, 255, 255, 0) 100%);
-	border: 1px solid #ced4da;
-	border-radius: .25rem;
-	transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    display: block;
+    width: 100%;
+    padding: .375rem 2.25rem .375rem .75rem;
+    -moz-padding-start: calc(0.75rem - 3px);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     border-radius: 0.7rem;
 }
 
 select {
-	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-	background-repeat: no-repeat;
-	background-position: left .75rem center;
-	background-size: 16px 12px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: left .75rem center;
+    background-size: 16px 12px;
 }
 
 li {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 }
-
-
-
 
 .text-color-title {
     color: var(--color-title)
@@ -113,8 +105,6 @@ li {
     border-style: solid;
 }
 
-
-
 .bg-color-main {
     background-color: var(--color-background)
 }
@@ -129,12 +119,8 @@ li {
 
 .bg-color-gradient {
     background: var(--color-background);
-    background: linear-gradient(245deg, var(--color-background) 50%, rgba(255, 255, 255, 0) 100%);
-}
-
-.bg-color-gradient-special {
-    background: var(--color-special);
-    background: linear-gradient(245deg, var(--color-special) 50%, rgba(255, 255, 255, 0) 100%);
+    background: -webkit-linear-gradient(to right, var(--color-background), var(--color-background-2));
+    background: linear-gradient(to right, var(--color-background), var(--color-background-2));
 }
 
 .text-ellipsis {
@@ -192,6 +178,15 @@ li {
 
 .navbar-brand img {
     max-height: 5rem;
+}
+
+.errorlist {
+    color: red;
+    font-weight: bold;
+}
+
+.captcha {
+    margin-bottom: 0.5rem;
 }
 
 /* End of Django Template Styles */
