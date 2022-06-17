@@ -1,11 +1,12 @@
 from django.utils.translation import gettext_lazy as _
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
+    HTTP_302_FOUND,
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
     HTTP_403_FORBIDDEN,
@@ -15,7 +16,7 @@ from rest_framework.status import (
 from .base import BaseTestCase
 
 
-class LoginTest(BaseTestCase):
+class LoginAPITest(BaseTestCase):
     """
     Test login
     """
@@ -46,7 +47,7 @@ class LoginTest(BaseTestCase):
             "user_id"), user.id)
 
 
-class RefreshTest(BaseTestCase):
+class RefreshAPITest(BaseTestCase):
     """
     Test refresh
     """
@@ -81,7 +82,7 @@ class RefreshTest(BaseTestCase):
         self.assertEqual(access_token.get("user_id"), user.id)
 
 
-class RegisterTest(BaseTestCase):
+class RegisterAPITest(BaseTestCase):
     """
     Test register
     """
@@ -117,7 +118,7 @@ class RegisterTest(BaseTestCase):
             "user_id"), user.id)
 
 
-class UserInfoTest(BaseTestCase):
+class UserInfoAPITest(BaseTestCase):
     """
     Test user info
     """
@@ -138,3 +139,52 @@ class UserInfoTest(BaseTestCase):
         self.assertEqual(response.json()["last_name"], user.last_name)
         self.assertEqual(response.json()["email"], user.email)
         self.assertEqual(response.json()["is_staff"], user.is_staff)
+
+
+class RegistrationTest(BaseTestCase):
+    """
+    Test Registration
+    """
+    url = reverse_lazy("user-register")
+    methods_not_allowed = ['patch', 'delete', 'trace']
+
+    def test_empty_request(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn("username", response.context.get('form').errors)
+        self.assertIn("password1", response.context.get('form').errors)
+        self.assertIn("password2", response.context.get('form').errors)
+        self.assertIn("captcha", response.context.get('form').errors)
+        self.assertEqual(User.objects.count(), 0)
+
+    def test_duplicate_user(self):
+        self.get_user("testuser")
+        data = {
+            "username": "testuser",
+            "password1": "new_password",
+            "password2": "new_password",
+            "captcha_0": "my-test",
+            "captcha_1": "PASSED",
+        }
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn("username", response.context.get('form').errors)
+        self.assertNotIn("password1", response.context.get('form').errors)
+        self.assertNotIn("password2", response.context.get('form').errors)
+        self.assertNotIn("captcha", response.context.get('form').errors)
+        self.assertEqual(User.objects.count(), 1)
+
+    def test_success_response(self):
+        self.get_user("user1")
+        self.get_user_token("user2")
+        data = {
+            "username": "testuser",
+            "password1": "new_password",
+            "password2": "new_password",
+            "captcha_0": "my-test",
+            "captcha_1": "PASSED",
+        }
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_302_FOUND)
+        self.assertEqual(response.url, reverse("home"))
+        self.assertEqual(User.objects.count(), 3)
