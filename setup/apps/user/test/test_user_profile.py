@@ -27,6 +27,7 @@ class ProfileTest(BaseTestCase):
         self.assertEqual(Profile.objects.count(), 1)
         self.assertEqual(profile.user, user)
         self.assertEqual(profile.phone, None)
+        self.assertEqual(profile.is_email_verified, False)
 
     def test_update(self):
         user_1 = self.get_user("otp-user1", phone="966512345678")
@@ -38,3 +39,4 @@ class ProfileTest(BaseTestCase):
         profile.save()
         new_profile = Profile.objects.get(phone=new_phone)
         self.assertEqual(new_profile.user, user_1)
+        self.assertEqual(new_profile.is_email_verified, False)

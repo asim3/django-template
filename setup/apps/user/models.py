@@ -11,6 +11,7 @@ OTP_DEFAULT_AGE = timezone.timedelta(seconds=settings.OTP_DEFAULT_AGE)
 
 class Profile(Model):
     user = OneToOneField(User, on_delete=CASCADE)
+    is_email_verified = BooleanField(_('Email Verified'), default=False)
     phone = CharField(
         _("phone"),
         max_length=15,
