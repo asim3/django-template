@@ -11,7 +11,7 @@ from backends.utils import (
     send_sms_message,
 )
 
-from .models import OneTimePassword
+from .models import Profile, OneTimePassword
 
 
 class RegisterSerializer(Serializer):
@@ -91,6 +91,8 @@ class ValidateOneTimePasswordSerializer(Serializer):
     phone = CharField(max_length=15, write_only=True, required=True)
     token = CharField(max_length=settings.OTP_MAX_LENGTH,
                       write_only=True, required=True)
+    refresh = CharField(read_only=True)
+    access = CharField(read_only=True)
 
     def validate_phone(self, value):
         phone = clean_phone_number(value)
@@ -117,3 +119,12 @@ class ValidateOneTimePasswordSerializer(Serializer):
                 _("The phone or token you entered are not correct"))
         raise ValidationError(
             _("The phone or token you entered are not correct"))
+
+    def create(self, validated_data):
+        phone = validated_data.get("phone")
+        user = Profile.objects.get(phone=phone).user
+        token_refresh = RefreshToken.for_user(user)
+        return {
+            "refresh": str(token_refresh),
+            "access": str(token_refresh.access_token),
+        }

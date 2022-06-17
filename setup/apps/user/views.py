@@ -4,16 +4,11 @@ from django.contrib.auth import login
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import (
-    GenericAPIView,
     CreateAPIView,
     RetrieveAPIView,
 )
 
-from .models import Profile
 from .forms import RegistrationForm
 from .serializers import (
     RegisterSerializer,
@@ -53,21 +48,6 @@ class CreateOneTimePasswordAPIView(CreateAPIView):
     serializer_class = CreateOneTimePasswordSerializer
 
 
-class ValidateOneTimePasswordAPIView(GenericAPIView):
+class ValidateOneTimePasswordAPIView(CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = ValidateOneTimePasswordSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        return self.data_valid(serializer.validated_data)
-
-    def data_valid(self, validated_data):
-        phone = validated_data.get("phone")
-        user = Profile.objects.get(phone=phone).user
-        token_refresh = RefreshToken.for_user(user)
-        access_data = {
-            "refresh": str(token_refresh),
-            "access": str(token_refresh.access_token),
-        }
-        return Response(access_data, status=HTTP_200_OK)

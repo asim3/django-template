@@ -197,7 +197,7 @@ class ValidateOneTimePasswordAPIViewTest(BaseTestCase):
         self.add_multiple_otp()
         for user_id, data in enumerate(self.users_list, 1):
             response = self.client.post(self.url, data=data)
-            self.assertEqual(response.status_code, HTTP_200_OK, msg=data)
+            self.assertEqual(response.status_code, HTTP_201_CREATED, msg=data)
             refresh = response.json().get("refresh")
             access = response.json().get("access")
             self.assertEqual(RefreshToken(refresh).get("user_id"), user_id)
