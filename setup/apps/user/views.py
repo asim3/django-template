@@ -31,12 +31,12 @@ class UserInfoAPIView(RetrieveAPIView):
         return self.request.user
 
 
-class CreateOneTimePasswordView(CreateAPIView):
+class CreateOneTimePasswordAPIView(CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = CreateOneTimePasswordSerializer
 
 
-class ValidateOneTimePasswordView(GenericAPIView):
+class ValidateOneTimePasswordAPIView(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = ValidateOneTimePasswordSerializer
 

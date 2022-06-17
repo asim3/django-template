@@ -62,9 +62,9 @@ class OneTimePasswordModelTest(BaseTestCase):
 
 
 @patch("backends.utils.requests", MockedSMSRequests)
-class CreateOneTimePasswordViewTest(BaseTestCase):
+class CreateOneTimePasswordAPIViewTest(BaseTestCase):
     """
-    Test Create One Time Password View
+    Test Create One Time Password APIView
     """
     url = reverse_lazy("v1-user-otp-login")
     methods_not_allowed = ['get', 'put', 'patch', 'delete', 'head', 'trace']
@@ -142,7 +142,7 @@ class CreateOneTimePasswordViewTest(BaseTestCase):
                 self.assertEqual(actual + "x", expected)
 
 
-class ValidateOneTimePasswordViewTest(BaseTestCase):
+class ValidateOneTimePasswordAPIViewTest(BaseTestCase):
     """
     Test Validate One Time Password View
     """
