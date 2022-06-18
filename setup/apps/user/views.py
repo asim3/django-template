@@ -3,6 +3,13 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth import login
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
+from django.contrib.auth.views import (
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView,
+)
+
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.generics import (
     CreateAPIView,
@@ -28,6 +35,23 @@ class RegistrationView(SuccessMessageMixin, CreateView):
         response = super().form_valid(form)
         login(self.request, self.object)
         return response
+
+
+class UserPasswordResetView(PasswordResetView):
+    email_template_name = 'user/password_reset_email.html'
+    template_name = 'user/password_reset_form.html'
+
+
+class UserPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'user/password_reset_done.html'
+
+
+class UserPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'user/password_reset_confirm.html'
+
+
+class UserPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'user/password_reset_complete.html'
 
 
 class RegisterAPIView(CreateAPIView):
