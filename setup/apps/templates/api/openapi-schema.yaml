@@ -210,6 +210,12 @@ components:
           type: string
           writeOnly: true
           maxLength: 4
+        refresh:
+          type: string
+          readOnly: true
+        access:
+          type: string
+          readOnly: true
       required:
       - phone
       - token
