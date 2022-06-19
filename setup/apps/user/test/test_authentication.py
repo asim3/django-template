@@ -1,6 +1,5 @@
 from django.utils.translation import gettext_lazy as _
-from django.urls import reverse_lazy, reverse
-from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.status import (
     HTTP_200_OK,

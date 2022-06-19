@@ -38,8 +38,9 @@ class RegistrationView(SuccessMessageMixin, CreateView):
 
 
 class UserPasswordResetView(PasswordResetView):
-    email_template_name = 'user/password_reset_email.html'
     template_name = 'user/password_reset_form.html'
+    email_template_name = 'user/password_reset_email.html'
+    subject_template_name = 'user/password_reset_subject.txt'
 
 
 class UserPasswordResetDoneView(PasswordResetDoneView):
