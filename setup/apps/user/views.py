@@ -16,7 +16,7 @@ from rest_framework.generics import (
     RetrieveAPIView,
 )
 
-from .forms import RegistrationForm
+from .forms import RegistrationForm, UserPasswordResetForm
 from .serializers import (
     RegisterSerializer,
     UserInfoSerializer,
@@ -41,6 +41,7 @@ class UserPasswordResetView(PasswordResetView):
     template_name = 'user/password_reset_form.html'
     email_template_name = 'user/password_reset_email.html'
     subject_template_name = 'user/password_reset_subject.txt'
+    form_class = UserPasswordResetForm
 
 
 class UserPasswordResetDoneView(PasswordResetDoneView):

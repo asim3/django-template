@@ -32,7 +32,7 @@ class UserPasswordResetTest(BaseTestCase):
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertIn("email", response.context.get('form').errors)
-        # self.assertIn("captcha", response.context.get('form').errors)
+        self.assertIn("captcha", response.context.get('form').errors)
         self.assertEqual(User.objects.count(), 0)
 
     def test_email_does_not_exist(self):
@@ -45,6 +45,25 @@ class UserPasswordResetTest(BaseTestCase):
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_302_FOUND)
         self.assertIn(response.url, reverse("password_reset_done"))
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_email_syntax(self):
+        data = {"email": "test@user"}
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn("email", response.context.get('form').errors)
+        self.assertIn("captcha", response.context.get('form').errors)
+
+    def test_not_valid_captcha(self):
+        data = {
+            "email": "test@user.com",
+            "captcha_0": "my-test",
+            "captcha_1": "0000",
+        }
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertNotIn("email", response.context.get('form').errors)
+        self.assertIn("captcha", response.context.get('form').errors)
         self.assertEqual(len(mail.outbox), 0)
 
     def test_success_post(self):

@@ -68,6 +68,23 @@ class RegistrationTest(BaseTestCase):
         self.assertNotIn("captcha", response.context.get('form').errors)
         self.assertEqual(User.objects.count(), 2)
 
+    def test_not_valid_captcha(self):
+        self.get_user("user1")
+        data = {
+            "username": "test@user.com",
+            "password1": "new_password",
+            "password2": "new_password",
+            "captcha_0": "my-test",
+            "captcha_1": "0000",
+        }
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertNotIn("username", response.context.get('form').errors)
+        self.assertNotIn("password1", response.context.get('form').errors)
+        self.assertNotIn("password2", response.context.get('form').errors)
+        self.assertIn("captcha", response.context.get('form').errors)
+        self.assertEqual(User.objects.count(), 1)
+
     def test_success_response(self):
         self.get_user("user1@user.com")
         self.get_user_token("user2@user.com")
