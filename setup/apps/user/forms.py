@@ -2,9 +2,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import UserCreationForm
 from django.forms.fields import EmailField
 from captcha.fields import CaptchaField
-from django.contrib.auth.forms import (
-    PasswordResetForm,
-)
+from django.contrib.auth.forms import PasswordResetForm
+
 from .models import Profile
 
 

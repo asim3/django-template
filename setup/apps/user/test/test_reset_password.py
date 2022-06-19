@@ -1,6 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy, reverse
 from django.core import mail
+from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework.status import (
     HTTP_200_OK,
@@ -14,6 +15,8 @@ from rest_framework.status import (
 )
 
 from .base import BaseTestCase
+
+import re
 
 
 class UserPasswordResetTest(BaseTestCase):
@@ -79,8 +82,13 @@ class UserPasswordResetTest(BaseTestCase):
         self.assertEqual(len(mail.outbox), 1)
         subject = _("Password reset on") + " testserver"
         self.assertEqual(subject, mail.outbox[0].subject)
-        self.assertEqual("info@gmail.com", mail.outbox[0].from_email)
+        self.assertIn("http://", mail.outbox[0].body)
+        self.assertEqual(
+            settings.DEFAULT_FROM_EMAIL, mail.outbox[0].from_email)
         self.assertEqual(['test@user.com'], mail.outbox[0].recipients())
+        urlmatch = re.search(
+            r"https?://[^/]*(/.*reset/\S*)", mail.outbox[0].body)
+        self.assertIsNotNone(urlmatch, "No URL found in sent email")
 
 
 class UserPasswordResetDoneTest(BaseTestCase):
@@ -103,9 +111,27 @@ class UserPasswordResetConfirmTest(BaseTestCase):
     """
     url = reverse_lazy(
         "password_reset_confirm",
-        kwargs={"uidb64": "eee", "token": "eee"}
+        kwargs={"uidb64": "MQ", "token": "eee"}
+    )
+    reset_url_token = reverse_lazy(
+        "password_reset_confirm",
+        kwargs={"uidb64": "MQ", "token": "set-password"}
     )
     methods_not_allowed = None
+
+    def get_reset_confirm_url(self):
+        User.objects.create_user("test_username", "test@user.com", "pass")
+        data = {
+            "email": "test@user.com",
+            "captcha_0": "my-test",
+            "captcha_1": "PASSED",
+        }
+        response = self.client.post("/ar/user/password_reset/", data=data)
+        self.assertEqual(response.status_code, HTTP_302_FOUND)
+        email_body = mail.outbox[0].body
+        urlmatch = re.search(r"https?://[^/]*(/.*reset/\S*)", email_body)
+        self.assertIsNotNone(urlmatch, "No URL found in sent email")
+        return urlmatch[1]
 
     def test_not_valid_token(self):
         response = self.client.get(self.url)
@@ -113,8 +139,37 @@ class UserPasswordResetConfirmTest(BaseTestCase):
         self.assertEqual(_('Password reset unsuccessful'),
                          response.context.get('title'))
         self.assertFalse(response.context.get('validlink'))
-        # self.assertEqual(_('Enter new password'),
-        #                  response.context.get('title'))
+
+    def test_empty_request(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIsNone(response.context.get('form'))
+        self.assertEqual(_('Password reset unsuccessful'),
+                         response.context.get('title'))
+        self.assertEqual(User.objects.count(), 0)
+
+    def test_success_get_response(self):
+        response = self.client.get(self.get_reset_confirm_url())
+        self.assertEqual(response.status_code, HTTP_302_FOUND)
+        self.assertEqual(response.url, self.reset_url_token)
+        # redirect
+        response = self.client.get(response.url)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertTrue(response.context.get('validlink'))
+        self.assertEqual(_('Enter new password'),
+                         response.context.get('title'))
+
+    def test_success_post_response(self):
+        response = self.client.post(self.get_reset_confirm_url())
+        self.assertEqual(response.status_code, HTTP_302_FOUND)
+        self.assertEqual(response.url, self.reset_url_token)
+        data = {
+            "new_password1": "my-new-test-pass",
+            "new_password2": "my-new-test-pass",
+        }
+        response = self.client.post(response.url, data)
+        self.assertEqual(response.status_code, HTTP_302_FOUND)
+        self.assertEqual(response.url, reverse("password_reset_complete"))
 
 
 class UserPasswordResetCompleteTest(BaseTestCase):
