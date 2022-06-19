@@ -4,13 +4,8 @@ from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.status import (
     HTTP_200_OK,
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_302_FOUND,
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
-    HTTP_405_METHOD_NOT_ALLOWED,
 )
 
 from .base import BaseTestCase
@@ -80,42 +75,6 @@ class RefreshAPITest(BaseTestCase):
         self.assertIn('access', response.json().keys())
         access_token = AccessToken(response.json()["access"])
         self.assertEqual(access_token.get("user_id"), user.id)
-
-
-class RegisterAPITest(BaseTestCase):
-    """
-    Test register
-    """
-    url = reverse_lazy("v1-user-register")
-    methods_not_allowed = ['get', 'put', 'patch', 'delete', 'head', 'trace']
-
-    def test_empty_request(self):
-        response = self.client.post(self.url)
-        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertIn('username', response.json().keys())
-        self.assertIn('password', response.json().keys())
-        self.assertEqual(User.objects.count(), 0)
-
-    def test_duplicate_user(self):
-        self.get_user("testuser")
-        data = {"username": "testuser", "password": "new_password"}
-        response = self.client.post(self.url, data=data)
-        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertIn('username', response.json().keys())
-        self.assertEqual(User.objects.count(), 1)
-
-    def test_success_response(self):
-        self.get_user("user1")
-        self.get_user_token("user2")
-        data = {"username": "testuser", "password": "my_password"}
-        response = self.client.post(self.url, data=data)
-        self.assertEqual(User.objects.count(), 3)
-        self.assertEqual(response.status_code, HTTP_201_CREATED)
-        user = self.get_user("testuser")
-        self.assertEqual(RefreshToken(response.json()["refresh"]).get(
-            "user_id"), user.id)
-        self.assertEqual(AccessToken(response.json()["access"]).get(
-            "user_id"), user.id)
 
 
 class UserInfoAPITest(BaseTestCase):

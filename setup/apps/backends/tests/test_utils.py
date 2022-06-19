@@ -8,6 +8,7 @@ from backends.utils import (
     generate_random_name,
     generate_OTP_key,
     send_sms_message,
+    SMS_Error,
 )
 
 
@@ -66,7 +67,11 @@ class UtilsTest(TestCase):
             send_sms_message()
         with self.assertRaises(TypeError):
             send_sms_message("phone")
+        with self.assertRaises(SMS_Error):
+            send_sms_message("not_digit", "1234", raise_exception=True)
 
     def test_send_sms_message(self):
         self.assertTrue(send_sms_message("966500", "text"))
         self.assertFalse(send_sms_message("phone", "text"))
+        self.assertFalse(send_sms_message(
+            "not_digit", "text", raise_exception=False))
