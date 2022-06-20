@@ -156,12 +156,11 @@ class EmailVerificationTest(BaseTestCase):
     url = reverse_lazy("user-email-verification")
     methods_not_allowed = None
 
-    def get_email_verification_url(self):
-        user = self.get_user()
+    def get_email_verification_url(self, user):
         uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
         token_generator = EmailVerificationTokenGenerator()
         token = token_generator.make_token(user)
-        return reverse("password_reset_confirm", kwargs={
+        return reverse("user-email-verification-confirm", kwargs={
             "uidb64": uidb64,
             "token": token
         })
@@ -175,15 +174,24 @@ class EmailVerificationTest(BaseTestCase):
             "captcha_1": "PASSED",
         })
         self.assertEqual(response.status_code, HTTP_302_FOUND)
+        self.assertEqual(response.url, reverse("user-email-verification"))
         response = self.client.get(response.url)
         self.assertEqual(response.status_code, HTTP_302_FOUND)
+        self.assertEqual(response.url, reverse("home"))
         self.assertEqual(len(mail.outbox), 1)
         subject = _("Password reset on") + " testserver"
         self.assertEqual(subject, mail.outbox[0].subject)
+        self.assertIn("http://", mail.outbox[0].body)
         self.assertEqual(
             settings.DEFAULT_FROM_EMAIL, mail.outbox[0].from_email)
         self.assertEqual(['url@email.com'], mail.outbox[0].recipients())
-        email_body = mail.outbox[0].body
-        urlmatch = re.search(r"https?://[^/]*(/.*reset/\S*)", email_body)
-        self.assertIsNotNone(urlmatch, "No URL found in sent email")
-        return urlmatch[1]
+
+    def test_email_verification_confirm(self):
+        user = self.get_user(phone="9665")
+        self.assertFalse(user.profile.is_email_verified)
+        url = self.get_email_verification_url(user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTP_302_FOUND)
+        user = User.objects.get(username=user.username)
+        self.assertTrue(user.profile.is_email_verified)
+        self.assertEqual(response.url, reverse("home"))

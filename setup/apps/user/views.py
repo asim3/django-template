@@ -18,7 +18,7 @@ from rest_framework.generics import (
 )
 
 from .forms import RegistrationForm, UserPasswordResetForm
-from .mixins import SendEmailVerificationMixin
+from .mixins import SendEmailVerificationMixin, EmailVerificationConfirmMixin
 from .serializers import (
     RegisterSerializer,
     UserInfoSerializer,
@@ -43,7 +43,11 @@ class SendEmailVerificationView(
         LoginRequiredMixin,
         SendEmailVerificationMixin,
         RedirectView):
-    pattern_name = "home"
+    url = reverse_lazy('home')
+
+
+class EmailVerificationConfirmView(EmailVerificationConfirmMixin, RedirectView):
+    url = reverse_lazy('home')
 
 
 class UserPasswordResetView(PasswordResetView):
