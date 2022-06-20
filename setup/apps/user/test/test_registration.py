@@ -1,5 +1,9 @@
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy, reverse
+from django.core import mail
+from django.conf import settings
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.status import (
@@ -9,7 +13,11 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
 )
 
+
+from backends.tokens import EmailVerificationTokenGenerator
 from .base import BaseTestCase
+
+import re
 
 
 class RegistrationTest(BaseTestCase):
@@ -97,7 +105,7 @@ class RegistrationTest(BaseTestCase):
         }
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_302_FOUND)
-        self.assertEqual(response.url, reverse("home"))
+        self.assertEqual(response.url, reverse("user-email-verification"))
         self.assertEqual(User.objects.count(), 3)
         new_user = User.objects.get(username="test@user.com")
         self.assertEqual(new_user.email, "test@user.com")
@@ -139,3 +147,43 @@ class RegisterAPITest(BaseTestCase):
             "user_id"), user.id)
         self.assertEqual(AccessToken(response.json()["access"]).get(
             "user_id"), user.id)
+
+
+class EmailVerificationTest(BaseTestCase):
+    """
+    Test Email Verification
+    """
+    url = reverse_lazy("user-email-verification")
+    methods_not_allowed = None
+
+    def get_email_verification_url(self):
+        user = self.get_user()
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+        token_generator = EmailVerificationTokenGenerator()
+        token = token_generator.make_token(user)
+        return reverse("password_reset_confirm", kwargs={
+            "uidb64": uidb64,
+            "token": token
+        })
+
+    def test_send_email_verification(self):
+        response = self.client.post(reverse("user-register"), data={
+            "username": "url@email.com",
+            "password1": "new_password",
+            "password2": "new_password",
+            "captcha_0": "my-test",
+            "captcha_1": "PASSED",
+        })
+        self.assertEqual(response.status_code, HTTP_302_FOUND)
+        response = self.client.get(response.url)
+        self.assertEqual(response.status_code, HTTP_302_FOUND)
+        self.assertEqual(len(mail.outbox), 1)
+        subject = _("Password reset on") + " testserver"
+        self.assertEqual(subject, mail.outbox[0].subject)
+        self.assertEqual(
+            settings.DEFAULT_FROM_EMAIL, mail.outbox[0].from_email)
+        self.assertEqual(['url@email.com'], mail.outbox[0].recipients())
+        email_body = mail.outbox[0].body
+        urlmatch = re.search(r"https?://[^/]*(/.*reset/\S*)", email_body)
+        self.assertIsNotNone(urlmatch, "No URL found in sent email")
+        return urlmatch[1]

@@ -1,6 +1,7 @@
 from django.utils.translation import gettext_lazy as _
-from django.views.generic.edit import CreateView
+from django.views.generic import CreateView, RedirectView
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.views import (
@@ -17,6 +18,7 @@ from rest_framework.generics import (
 )
 
 from .forms import RegistrationForm, UserPasswordResetForm
+from .mixins import SendEmailVerificationMixin
 from .serializers import (
     RegisterSerializer,
     UserInfoSerializer,
@@ -28,13 +30,20 @@ from .serializers import (
 class RegistrationView(SuccessMessageMixin, CreateView):
     template_name = 'user/registration.html'
     form_class = RegistrationForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('user-email-verification')
     success_message = _("Your profile was created successfully")
 
     def form_valid(self, form):
         response = super().form_valid(form)
         login(self.request, self.object)
         return response
+
+
+class SendEmailVerificationView(
+        LoginRequiredMixin,
+        SendEmailVerificationMixin,
+        RedirectView):
+    pattern_name = "home"
 
 
 class UserPasswordResetView(PasswordResetView):
