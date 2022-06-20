@@ -245,6 +245,14 @@ components:
         access:
           type: string
           readOnly: true
+        captcha_key:
+          type: string
+          writeOnly: true
+        captcha_token:
+          type: string
+          writeOnly: true
       required:
       - username
       - password
+      - captcha_key
+      - captcha_token

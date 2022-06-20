@@ -1,7 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer, CharField, ValidationError, ModelSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.conf import settings
 from backends.utils import (
@@ -12,6 +11,7 @@ from backends.utils import (
 )
 
 from .models import Profile, OneTimePassword
+from .forms import RegistrationForm
 
 
 class RegisterSerializer(Serializer):
@@ -19,12 +19,17 @@ class RegisterSerializer(Serializer):
     password = CharField(write_only=True, required=True)
     refresh = CharField(read_only=True)
     access = CharField(read_only=True)
+    captcha_key = CharField(write_only=True, required=True)
+    captcha_token = CharField(write_only=True, required=True)
 
     def get_form(self, data):
-        return UserCreationForm(data={
+        return RegistrationForm(data={
             "username": data["username"],
             "password1": data["password"],
-            "password2": data["password"]})
+            "password2": data["password"],
+            "captcha_0": data["captcha_key"],
+            "captcha_1": data["captcha_token"],
+        })
 
     def validate(self, data):
         form = self.get_form(data)

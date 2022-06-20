@@ -128,9 +128,13 @@ class RegisterAPITest(BaseTestCase):
         self.assertEqual(User.objects.count(), 0)
 
     def test_duplicate_user(self):
-        self.get_user("testuser")
-        data = {"username": "testuser", "password": "new_password"}
-        response = self.client.post(self.url, data=data)
+        self.get_user("test@user.com")
+        response = self.client.post(self.url, data={
+            "username": "test@user.com",
+            "password": "my_password",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        })
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertIn('username', response.json().keys())
         self.assertEqual(User.objects.count(), 1)
@@ -138,11 +142,15 @@ class RegisterAPITest(BaseTestCase):
     def test_success_response(self):
         self.get_user("user1")
         self.get_user_token("user2")
-        data = {"username": "testuser", "password": "my_password"}
-        response = self.client.post(self.url, data=data)
-        self.assertEqual(User.objects.count(), 3)
+        response = self.client.post(self.url, data={
+            "username": "test@user.com",
+            "password": "my_password",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        })
         self.assertEqual(response.status_code, HTTP_201_CREATED)
-        user = self.get_user("testuser")
+        self.assertEqual(User.objects.count(), 3)
+        user = self.get_user("test@user.com")
         self.assertEqual(RefreshToken(response.json()["refresh"]).get(
             "user_id"), user.id)
         self.assertEqual(AccessToken(response.json()["access"]).get(
@@ -166,6 +174,27 @@ class EmailVerificationTest(BaseTestCase):
         })
 
     def test_send_email_verification(self):
+        response = self.client.post(reverse("user-register"), data={
+            "username": "url@email.com",
+            "password1": "new_password",
+            "password2": "new_password",
+            "captcha_0": "my-test",
+            "captcha_1": "PASSED",
+        })
+        self.assertEqual(response.status_code, HTTP_302_FOUND)
+        self.assertEqual(response.url, reverse("user-email-verification"))
+        response = self.client.get(response.url)
+        self.assertEqual(response.status_code, HTTP_302_FOUND)
+        self.assertEqual(response.url, reverse("home"))
+        self.assertEqual(len(mail.outbox), 1)
+        subject = _("Password reset on") + " testserver"
+        self.assertEqual(subject, mail.outbox[0].subject)
+        self.assertIn("http://", mail.outbox[0].body)
+        self.assertEqual(
+            settings.DEFAULT_FROM_EMAIL, mail.outbox[0].from_email)
+        self.assertEqual(['url@email.com'], mail.outbox[0].recipients())
+
+    def test_send_email_verification_api(self):
         response = self.client.post(reverse("user-register"), data={
             "username": "url@email.com",
             "password1": "new_password",
