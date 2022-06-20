@@ -21,7 +21,7 @@ INSTALLED_APPS += [
     'rest_framework',
     'rest_framework_simplejwt',
     'captcha',
-    # 'simple_history',
+    'utilities',
 ]
 
 MIDDLEWARE.insert(2, 'django.middleware.locale.LocaleMiddleware')
