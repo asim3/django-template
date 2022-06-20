@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 
-from backends.tokens import EmailVerificationTokenGenerator
+from utilities.tokens import EmailVerificationTokenGenerator
 
 
 class SendEmailVerificationMixin:

@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.conf import settings
-from backends.tests.mock_patch import patch, MockedSMSRequests
-from backends.utils import (
+from utilities.tests.mock_patch import patch, MockedSMSRequests
+from utilities.utils import (
     clean_phone_number,
     clean_arabic_digits,
     generate_random_key,
@@ -12,7 +12,7 @@ from backends.utils import (
 )
 
 
-@patch("backends.utils.requests", MockedSMSRequests)
+@patch("utilities.utils.requests", MockedSMSRequests)
 class UtilsTest(TestCase):
     def test_generate_random_key(self):
         self.assertEqual(len(generate_random_key()), 100)

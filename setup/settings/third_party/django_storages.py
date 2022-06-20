@@ -3,7 +3,7 @@ import os
 
 AWS_S3_FILE_OVERWRITE = False
 
-# DEFAULT_FILE_STORAGE = 'backends.storages.PrivateMediaStorage'
+# DEFAULT_FILE_STORAGE = 'utilities.storages.PrivateMediaStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'

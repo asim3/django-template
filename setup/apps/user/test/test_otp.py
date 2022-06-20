@@ -8,8 +8,8 @@ from rest_framework.status import (
 )
 
 from user.models import OneTimePassword
-from backends.utils import clean_phone_number
-from backends.tests.mock_patch import patch, MockedSMSRequests
+from utilities.utils import clean_phone_number
+from utilities.tests.mock_patch import patch, MockedSMSRequests
 
 from .base import BaseTestCase
 
@@ -56,7 +56,7 @@ class OneTimePasswordModelTest(BaseTestCase):
         self.assertEqual(OneTimePassword.objects.count(), 1)
 
 
-@patch("backends.utils.requests", MockedSMSRequests)
+@patch("utilities.utils.requests", MockedSMSRequests)
 class CreateOneTimePasswordAPIViewTest(BaseTestCase):
     """
     Test Create One Time Password APIView

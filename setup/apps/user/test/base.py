@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED
 
-from backends.utils import generate_random_name
+from utilities.utils import generate_random_name
 from user.models import Profile
 
 

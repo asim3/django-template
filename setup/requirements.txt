@@ -15,7 +15,7 @@ djangorestframework-simplejwt==5.2.0
 PyYAML==6.0
 uritemplate==4.1.1
 
-# backends
+# utilities
 requests==2.28.0
 openpyxl==3.0.10
 fpdf==1.7.2

@@ -13,7 +13,7 @@ class PDF(FPDF):
         self.set_fill_color(79, 112, 134)
         self.cell(w=0, h=13, fill=True)
         self.set_y(0.5)
-        logo = "./backends/tests/data/django-logo-positive.png"
+        logo = "./utilities/tests/data/django-logo-positive.png"
         self.add_centered_image(logo, image_width=40)
 
     # def footer(self):

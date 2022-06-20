@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from backends.tokens import PasswordResetTokenGenerator, EmailVerificationTokenGenerator
+from utilities.tokens import PasswordResetTokenGenerator, EmailVerificationTokenGenerator
 
 
 class TokensTest(TestCase):

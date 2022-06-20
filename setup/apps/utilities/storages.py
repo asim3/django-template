@@ -19,8 +19,5 @@ class PrivateMediaStorage(S3Boto3Storage):
     signature_version = 's3v4'
 
 
-# nano my_app/models.py
-# from backends.storages import PrivateMediaStorage
-
 # class MyPhoto(Model):
 #   upload = FileField(storage=PrivateMediaStorage())

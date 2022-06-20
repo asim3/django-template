@@ -1,5 +1,5 @@
 from django.test import TestCase
-from backends.pdf import PDF
+from utilities.pdf import PDF
 
 
 class PDFTest(TestCase):

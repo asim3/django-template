@@ -14,7 +14,7 @@ from rest_framework.status import (
 )
 
 
-from backends.tokens import EmailVerificationTokenGenerator
+from utilities.tokens import EmailVerificationTokenGenerator
 from .base import BaseTestCase
 
 import re

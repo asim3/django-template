@@ -1,5 +1,5 @@
 from django.test import TestCase
-from backends.qr_code import (
+from utilities.qr_code import (
     BytesQRCode,
     get_qr_code_image_path,
     add_url_qr_code,

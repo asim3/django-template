@@ -1,11 +1,11 @@
 from django.test import TestCase
-from backends.zip import extract_zip_file
+from utilities.zip import extract_zip_file
 
 
 class ExtractZipTest(TestCase):
     def test_extract_zip_file(self):
         expected = "django-logo-positive.png"
-        file_path = "./backends/tests/data/django-logo.zip"
+        file_path = "./utilities/tests/data/django-logo.zip"
         actual = extract_zip_file(file_path)
         self.assertEqual(expected, actual[0][0])
 

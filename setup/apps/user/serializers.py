@@ -3,7 +3,7 @@ from rest_framework.serializers import Serializer, CharField, ValidationError, M
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from django.conf import settings
-from backends.utils import (
+from utilities.utils import (
     clean_phone_number,
     clean_arabic_digits,
     generate_OTP_key,

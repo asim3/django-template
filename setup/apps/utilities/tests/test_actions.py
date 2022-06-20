@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from backends.actions import (
+from utilities.actions import (
     export_to_excel_file,
 )
 

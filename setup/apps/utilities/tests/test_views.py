@@ -1,5 +1,5 @@
 from django.test import TestCase
-from backends.views import DownloadView
+from utilities.views import DownloadView
 
 
 class DownloadViewTest(TestCase):
