@@ -32,6 +32,11 @@ class DownloadView(TemplateView):
 
 
 class CaptchaAPIView(RetrieveAPIView):
+    """
+    Generate a new CAPTCHA challenge that humans can pass.
+
+    Valid for 5 minutes. 
+    """
     permission_classes = [AllowAny]
     serializer_class = CaptchaSerializer
 

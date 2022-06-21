@@ -70,11 +70,20 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
 
 
 class RegisterAPIView(CreateAPIView):
+    """
+    Register a new user.
+
+    You should provide a valid CAPTCHA token. To get a CAPTCHA 
+    challenge, you can use this endpoint "/v1/captcha/".
+    """
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
 
 class UserInfoAPIView(RetrieveAPIView):
+    """
+    Provide basic information about the current user
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = UserInfoSerializer
 
@@ -83,10 +92,21 @@ class UserInfoAPIView(RetrieveAPIView):
 
 
 class CreateOneTimePasswordAPIView(CreateAPIView):
+    """
+    Sends an SMS containing a one-time password token to the 
+    provided phone number.
+
+    You should provide a valid CAPTCHA token. To get a CAPTCHA 
+    challenge, you can use this endpoint "/v1/captcha/".
+    """
     permission_classes = [AllowAny]
     serializer_class = CreateOneTimePasswordSerializer
 
 
 class ValidateOneTimePasswordAPIView(CreateAPIView):
+    """
+    Takes a one-time password token and returns an access and refresh 
+    JSON web token pair to prove the authentication of the token.
+    """
     permission_classes = [AllowAny]
     serializer_class = ValidateOneTimePasswordSerializer

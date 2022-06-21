@@ -6,7 +6,7 @@ paths:
   /ar/v1/user/:
     get:
       operationId: retrieveUserInfo
-      description: ''
+      description: Provide basic information about the current user
       parameters: []
       responses:
         '200':
@@ -14,6 +14,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserInfo'
+          description: ''
+      tags:
+      - ar
+  /ar/v1/captcha/:
+    get:
+      operationId: retrieveCaptcha
+      description: 'Generate a new CAPTCHA challenge that humans can pass.
+
+
+        Valid for 5 minutes.'
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Captcha'
           description: ''
       tags:
       - ar
@@ -48,7 +65,9 @@ paths:
   /ar/v1/user/otp/:
     post:
       operationId: createCreateOneTimePassword
-      description: ''
+      description: "Sends an SMS containing a one-time password token to the \nprovided\
+        \ phone number.\n\nYou should provide a valid CAPTCHA token. To get a CAPTCHA\
+        \ \nchallenge, you can use this endpoint \"/v1/captcha/\"."
       parameters: []
       requestBody:
         content:
@@ -73,7 +92,8 @@ paths:
   /ar/v1/user/otp/validate/:
     post:
       operationId: createValidateOneTimePassword
-      description: ''
+      description: "Takes a one-time password token and returns an access and refresh\
+        \ \nJSON web token pair to prove the authentication of the token."
       parameters: []
       requestBody:
         content:
@@ -126,7 +146,9 @@ paths:
   /ar/v1/user/register/:
     post:
       operationId: createRegister
-      description: ''
+      description: "Register a new user.\n\nYou should provide a valid CAPTCHA token.\
+        \ To get a CAPTCHA \nchallenge, you can use this endpoint \"/v1/captcha/\"\
+        ."
       parameters: []
       requestBody:
         content:
@@ -180,6 +202,19 @@ components:
             \u0627."
       required:
       - username
+    Captcha:
+      type: object
+      properties:
+        key:
+          type: string
+        image_url:
+          type: string
+        large_image_url:
+          type: string
+      required:
+      - key
+      - image_url
+      - large_image_url
     TokenObtainPair:
       type: object
       properties:
