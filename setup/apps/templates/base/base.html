@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-{% load static %}
-{% load i18n %}
+{% load static i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 
-<html lang="{{ LANGUAGE_CODE }}" dir="rtl">
+<html lang="{{ LANGUAGE_CODE }}">
 
 {% include "base/head.html" %}
 
 {% if LANGUAGE_CODE|slice:":2" == 'ar' %}
-  <body class="bg-color-gradient" style="direction: rtl!important;text-align: right!important;">
+  <body class="bg-color-gradient" style="direction: rtl;text-align: right;">
 {% else %}
-  <body class="bg-color-gradient" style="direction: ltr!important;text-align: left!important;">
+  <body class="bg-color-gradient" style="direction: ltr;text-align: left;">
 {% endif %}
 
     <nav class="navbar navbar-expand-lg text-color-header">

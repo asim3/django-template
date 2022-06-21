@@ -1,6 +1,5 @@
-{% load static %}
-{% load i18n %}
-
+{% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <head>
     <meta charset="utf-8">
@@ -9,7 +8,12 @@
     
     <title>{% trans 'Website Title' %}</title>
     
+    {% if LANGUAGE_CODE|slice:":2" == 'ar' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.rtl.min.css' %}"/>
+    {% else %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+    {% endif %}
+
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
     
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
