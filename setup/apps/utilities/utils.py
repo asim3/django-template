@@ -68,7 +68,7 @@ def send_sms_message(phone, text, raise_exception=True):
             mail_admins(subject="send_sms_message post Error",
                         message=str(error))
             raise SMS_Error("Error from SMS host.")
-    if response.status_code == 200:
+    if response.status_code == 201:
         accepted = response.json().get("accepted")
         if accepted[1:-2] == phone:
             return True
