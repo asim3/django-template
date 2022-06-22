@@ -4,6 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
+from utilities.forms import CaptchaTestForm
 from utilities.utils import (
     clean_phone_number,
     clean_arabic_digits,
@@ -21,8 +22,8 @@ class RegisterSerializer(Serializer):
     password = CharField(write_only=True, required=True)
     refresh = CharField(read_only=True)
     access = CharField(read_only=True)
-    captcha_key = CharField(write_only=True, required=True)
-    captcha_token = CharField(write_only=True, required=True)
+    captcha_key = CharField(max_length=40, write_only=True, required=True)
+    captcha_token = CharField(max_length=6, write_only=True, required=True)
 
     def get_form(self, data):
         return RegistrationForm(data={
@@ -70,6 +71,18 @@ class UserInfoSerializer(ModelSerializer):
 
 class CreateOneTimePasswordSerializer(Serializer):
     phone = CharField(max_length=15, required=True)
+    captcha_key = CharField(max_length=40, write_only=True, required=True)
+    captcha_token = CharField(max_length=6, write_only=True, required=True)
+
+    def validate_captcha_form(self, data):
+        form = CaptchaTestForm(data={
+            "captcha_0": data["captcha_key"],
+            "captcha_1": data["captcha_token"],
+        })
+        if not form.is_valid():
+            if form.errors.get("captcha"):
+                form.errors["captcha_token"] = form.errors.pop("captcha")
+            raise ValidationError(form.errors)
 
     def validate_phone(self, value):
         phone = clean_phone_number(value)
@@ -83,6 +96,7 @@ class CreateOneTimePasswordSerializer(Serializer):
         return phone
 
     def validate(self, attrs):
+        self.validate_captcha_form(attrs)
         phone = attrs.get("phone")
         try:
             instance = OneTimePassword.objects.get(phone=phone)

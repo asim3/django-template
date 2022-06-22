@@ -69,39 +69,93 @@ class CreateOneTimePasswordAPIViewTest(BaseTestCase):
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertIn('phone', response.json().keys())
+        self.assertIn('captcha_key', response.json().keys())
+        self.assertIn('captcha_token', response.json().keys())
         self.assertEqual(OneTimePassword.objects.count(), 0)
 
     def test_phone_not_found(self):
         self.get_user("otp-user", phone="966512345678")
-        data = {"phone": "12321"}
+        data = {
+            "phone": "12321",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertNotIn('captcha_key', response.json().keys())
+        self.assertNotIn('captcha_token', response.json().keys())
         error_text = response.json().get("phone")[0]
         self.assertEqual(error_text, _("This phone number is not registered"))
+        self.assertEqual(OneTimePassword.objects.count(), 0)
+
+    def test_captcha_token_error(self):
+        self.get_user("otp-user", phone="966512345678")
+        data = {
+            "phone": "966512345678",
+            "captcha_key": "my-test",
+            "captcha_token": "abcd",
+        }
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertListEqual(['captcha_token'], list(response.json().keys()))
         self.assertEqual(OneTimePassword.objects.count(), 0)
 
     def test_OTP_duplicate_phone(self):
         self.get_user("otp-user1", phone="966512345678")
         self.get_user("otp-user2", phone="966587654322")
         self.get_user("otp-user3", phone="966587654323")
-        response = self.client.post(self.url, data={"phone": "966512345678"})
+        data = {
+            "phone": "966512345678",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_201_CREATED)
-        response = self.client.post(self.url, data={"phone": "966587654322"})
+        data = {
+            "phone": "966587654322",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_201_CREATED)
-        response = self.client.post(self.url, data={"phone": "966587654323"})
+        data = {
+            "phone": "966587654323",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_201_CREATED)
-        response = self.client.post(self.url, data={"phone": "966512345678"})
+        data = {
+            "phone": "966512345678",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertIn('errors', response.json().keys())
+        self.assertNotIn('captcha_key', response.json().keys())
+        self.assertNotIn('captcha_token', response.json().keys())
         self.assertEqual(OneTimePassword.objects.count(), 3)
 
     def test_resend_OTP(self):
         phone = "966587654321"
         self.get_user("otp-user1", phone=phone)
-        response = self.client.post(self.url, data={"phone": phone})
+        data = {
+            "phone": phone,
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_201_CREATED)
-        response = self.client.post(self.url, data={"phone": phone})
+        data = {
+            "phone": phone,
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertNotIn('captcha_key', response.json().keys())
+        self.assertNotIn('captcha_token', response.json().keys())
         self.assertIn('errors', response.json().keys())
         error_text = response.json().get("errors")[0]
         self.assertEqual(error_text, _(
@@ -110,12 +164,21 @@ class CreateOneTimePasswordAPIViewTest(BaseTestCase):
         otp_instance.created_on = timezone.now(
         ) - timezone.timedelta(seconds=settings.OTP_DEFAULT_AGE)
         otp_instance.save()
-        response = self.client.post(self.url, data={"phone": phone})
+        data = {
+            "phone": phone,
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_201_CREATED)
 
     def test_success_response(self):
         self.get_user("otp-user1", phone="966512345678")
-        data = {"phone": "966512345678"}
+        data = {
+            "phone": "966512345678",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_201_CREATED)
         self.assertEqual(OneTimePassword.objects.count(), 1)
@@ -123,10 +186,18 @@ class CreateOneTimePasswordAPIViewTest(BaseTestCase):
     def test_multiple_success_response(self):
         self.get_user("otp-user1", phone="966512345678")
         self.get_user("otp-user2", phone="966587654321")
-        data = {"phone": "966512345678"}
+        data = {
+            "phone": "966512345678",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_201_CREATED)
-        data = {"phone": "966587654321"}
+        data = {
+            "phone": "966587654321",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        }
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_201_CREATED)
         self.assertEqual(OneTimePassword.objects.count(), 2)
@@ -144,7 +215,12 @@ class CreateOneTimePasswordAPIViewTest(BaseTestCase):
         ]
         for actual, expected in phone_list:
             self.get_user(phone=expected)
-            response = self.client.post(self.url, data={"phone": actual})
+            data = {
+                "phone": actual,
+                "captcha_key": "my-test",
+                "captcha_token": "PASSED",
+            }
+            response = self.client.post(self.url, data=data)
             self.assertEqual(
                 response.status_code,
                 HTTP_201_CREATED,

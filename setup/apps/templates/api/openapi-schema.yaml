@@ -232,8 +232,18 @@ components:
         phone:
           type: string
           maxLength: 15
+        captcha_key:
+          type: string
+          writeOnly: true
+          maxLength: 40
+        captcha_token:
+          type: string
+          writeOnly: true
+          maxLength: 6
       required:
       - phone
+      - captcha_key
+      - captcha_token
     ValidateOneTimePassword:
       type: object
       properties:
@@ -283,9 +293,11 @@ components:
         captcha_key:
           type: string
           writeOnly: true
+          maxLength: 40
         captcha_token:
           type: string
           writeOnly: true
+          maxLength: 6
       required:
       - username
       - password

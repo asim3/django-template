@@ -7,9 +7,9 @@ class MockedSMSResponse:
     text = None
     json_data = None
 
-    def __init__(self, status_code=200, data=None):
+    def __init__(self, status_code=201, data=None):
         self.status_code = status_code
-        if status_code == 200:
+        if status_code == 201:
             self.json_data = {
                 "statusCode": 201,
                 "messageId": 6014905066,
