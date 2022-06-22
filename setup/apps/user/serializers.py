@@ -3,11 +3,13 @@ from rest_framework.serializers import Serializer, CharField, ValidationError, M
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils import timezone
 from utilities.utils import (
     clean_phone_number,
     clean_arabic_digits,
     generate_OTP_key,
     send_sms_message,
+    SMS_Error,
 )
 
 from .models import Profile, OneTimePassword
@@ -66,12 +68,8 @@ class UserInfoSerializer(ModelSerializer):
         depth = 1
 
 
-class CreateOneTimePasswordSerializer(ModelSerializer):
-
-    class Meta:
-        model = OneTimePassword
-        fields = ["phone"]
-        depth = 1
+class CreateOneTimePasswordSerializer(Serializer):
+    phone = CharField(max_length=15, required=True)
 
     def validate_phone(self, value):
         phone = clean_phone_number(value)
@@ -84,12 +82,39 @@ class CreateOneTimePasswordSerializer(ModelSerializer):
                 _("This phone number is not registered"))
         return phone
 
+    def validate(self, attrs):
+        phone = attrs.get("phone")
+        try:
+            instance = OneTimePassword.objects.get(phone=phone)
+            if instance.is_datetime_valid():
+                raise ValidationError(
+                    _("You can request a new OTP after 60 seconds"))
+            self.instance = instance
+        except OneTimePassword.DoesNotExist:
+            pass
+        return attrs
+
     def create(self, validated_data):
-        instance = super().create(validated_data)
-        instance.key = generate_OTP_key()
-        instance.save()
-        send_sms_message(instance.phone, _("Your OTP is: ") + instance.key)
+        key = generate_OTP_key()
+        phone = validated_data["phone"]
+        self.send_sms_message(phone, key)
+        instance = OneTimePassword.objects.create(phone=phone, key=key)
         return instance
+
+    def update(self, instance, validated_data):
+        key = generate_OTP_key()
+        self.send_sms_message(instance.phone, key)
+        instance.key = key
+        instance.created_on = timezone.now()
+        instance.save()
+        return instance
+
+    def send_sms_message(self, phone, key):
+        try:
+            text = _("Your OTP is: ") + key
+            send_sms_message(phone, text)
+        except SMS_Error as errors:
+            raise ValidationError({"errors": [str(errors)]})
 
 
 class ValidateOneTimePasswordSerializer(Serializer):

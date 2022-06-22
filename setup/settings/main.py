@@ -111,10 +111,14 @@ EMAIL_USE_TLS = True
 
 EMAIL_TIMEOUT = 15
 
+ADMINS = [
+    ('Asim', 'asimwebapps@gmail.com'),
+]
+
 # OTP
 OTP_MAX_LENGTH = 4
 
-OTP_DEFAULT_AGE = 60 * 5
+OTP_DEFAULT_AGE = 60
 
 SMS_BASE_URL = "https://api.taqnyat.sa/v1/messages"
 

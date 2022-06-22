@@ -1,4 +1,7 @@
+from django.core.mail import mail_admins
 from django.conf import settings
+from requests.exceptions import HTTPError, ConnectTimeout, ConnectionError
+
 import string
 import random
 import requests
@@ -51,20 +54,27 @@ def clean_phone_number(phone):
     return phone
 
 
-def send_sms_message(phone, text, raise_exception=False):
+def send_sms_message(phone, text, raise_exception=True):
     data = {
         "bearerTokens": settings.SMS_TOKEN,
         "sender": settings.SMS_DEFAULT_FROM,
         "recipients": str(phone),
         "body": str(text),
     }
-    response = requests.post(settings.SMS_BASE_URL, data=data)
+    try:
+        response = requests.post(settings.SMS_BASE_URL, data=data)
+    except (HTTPError, ConnectTimeout, ConnectionError) as error:
+        if raise_exception:
+            mail_admins(subject="send_sms_message post Error",
+                        message=str(error))
+            raise SMS_Error("Error from SMS host.")
     if response.status_code == 200:
         accepted = response.json().get("accepted")
         if accepted[1:-2] == phone:
             return True
     if raise_exception:
-        raise SMS_Error("Error while sending SMS. "
-                        f"status code: [{response.status_code}] "
-                        f"response: {response.text}")
+        mail_admins(
+            subject=f"send_sms_message Status code Error: [{response.status_code}].",
+            message=str(response.text))
+        raise SMS_Error("Error while sending SMS.")
     return False

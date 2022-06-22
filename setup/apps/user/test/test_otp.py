@@ -1,6 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.urls import reverse_lazy
+from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.status import (
     HTTP_201_CREATED,
@@ -91,8 +92,26 @@ class CreateOneTimePasswordAPIViewTest(BaseTestCase):
         self.assertEqual(response.status_code, HTTP_201_CREATED)
         response = self.client.post(self.url, data={"phone": "966512345678"})
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertIn('phone', response.json().keys())
+        self.assertIn('errors', response.json().keys())
         self.assertEqual(OneTimePassword.objects.count(), 3)
+
+    def test_resend_OTP(self):
+        phone = "966587654321"
+        self.get_user("otp-user1", phone=phone)
+        response = self.client.post(self.url, data={"phone": phone})
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        response = self.client.post(self.url, data={"phone": phone})
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertIn('errors', response.json().keys())
+        error_text = response.json().get("errors")[0]
+        self.assertEqual(error_text, _(
+            "You can request a new OTP after 60 seconds"))
+        otp_instance = OneTimePassword.objects.get(phone=phone)
+        otp_instance.created_on = timezone.now(
+        ) - timezone.timedelta(seconds=settings.OTP_DEFAULT_AGE)
+        otp_instance.save()
+        response = self.client.post(self.url, data={"phone": phone})
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
 
     def test_success_response(self):
         self.get_user("otp-user1", phone="966512345678")
@@ -173,7 +192,8 @@ class ValidateOneTimePasswordAPIViewTest(BaseTestCase):
         data = {"phone": "12321", "token": "1111"}
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        error_text = response.json().get("non_field_errors")[0]
+        self.assertIn('errors', response.json().keys())
+        error_text = response.json().get("errors")[0]
         self.assertEqual(error_text, _(
             "The phone or token you entered are not correct"))
         self.assertEqual(OneTimePassword.objects.count(), len(self.users_list))
@@ -183,7 +203,8 @@ class ValidateOneTimePasswordAPIViewTest(BaseTestCase):
         data = {"phone": "0503", "token": "0503"}
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        error_text = response.json().get("non_field_errors")[0]
+        self.assertIn('errors', response.json().keys())
+        error_text = response.json().get("errors")[0]
         self.assertEqual(error_text, _(
             "The phone or token you entered are not correct"))
         self.assertEqual(OneTimePassword.objects.count(), len(self.users_list))
