@@ -1,21 +1,19 @@
-from .main import *
+import dj_database_url
 
-import os
+from .main import *
 
 
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
+MAX_CONN_AGE = 600
+
+# Ensure STATIC_ROOT exists.
+# os.makedirs(STATIC_ROOT, exist_ok=True)
+
 DATABASES = {
-    "default": {
-        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
-        "USER": os.environ.get("SQL_USER", "user"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
-        "HOST": os.environ.get("SQL_HOST", "localhost"),
-        "PORT": os.environ.get("SQL_PORT", "5432"),
-    }
+    "default": dj_database_url.config(conn_max_age=MAX_CONN_AGE)
 }
 
 CAPTCHA_TEST_MODE = True
