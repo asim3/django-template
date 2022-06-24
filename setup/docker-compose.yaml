@@ -24,7 +24,6 @@ services:
       - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
       - DJANGO_SECRET_KEY="top-secret"
       - DJANGO_DEBUG=True
-      - DJANGO_ALLOWED_HOSTS=*,127.0.0.1,localhost
       - REST_SIGNING_KEY="rest-top-secret"
       - SQL_ENGINE=django.db.backends.postgresql
       - SQL_DATABASE=postgres

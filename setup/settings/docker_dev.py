@@ -17,3 +17,7 @@ DATABASES = {
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
+
+CAPTCHA_TEST_MODE = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'

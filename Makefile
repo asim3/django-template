@@ -9,7 +9,6 @@ CD=${ACTIVATE} cd ./${PROJECT_NAME} &&
 
 export DJANGO_SECRET_KEY=abcdefghijklmnopqrstuvwxyz0123456789!@%^&*(-_=+)50
 export DJANGO_DEBUG=True
-export DJANGO_ALLOWED_HOSTS=*,127.0.0.1,localhost
 export REST_SIGNING_KEY=rest-top-secret
 
 
@@ -96,6 +95,11 @@ backup:
 sql-backup:
 	${CD} mkdir -p ./media/backup
 	- ${CD} cp ./db.sqlite3 ./media/backup/db_$$(date +'%Y-%m-%d_%H-%M-%S').sqlite3
+
+
+heroku:
+	heroku git:remote -a ${PROJECT_NAME}-staging
+	git push heroku main
 
 
 heroku-production:

@@ -13,8 +13,6 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # DEBUG = os.getenv('DJANGO_DEBUG', False) in (True, 'True')
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
-
 INSTALLED_APPS += [
     'user',
     'home',
@@ -122,6 +120,6 @@ OTP_DEFAULT_AGE = 60
 
 SMS_BASE_URL = "https://api.taqnyat.sa/v1/messages"
 
-SMS_TOKEN = "******"
+SMS_TOKEN = os.environ.get('SMS_TOKEN')
 
 SMS_DEFAULT_FROM = "django"

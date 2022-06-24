@@ -5,6 +5,11 @@ from .third_party.heroku import *
 
 DEBUG = False
 
+ALLOWED_HOSTS = [
+    "asim.sa",
+    "asim.com",
+]
+
 SECURE_SSL_REDIRECT = True
 
 SESSION_COOKIE_HTTPONLY = True

@@ -18,12 +18,12 @@ Django Template
 
 ## Config Vars (env)
 - `DJANGO_SETTINGS_MODULE` = `my_project_name.settings.production`
-- `DJANGO_ALLOWED_HOSTS` = `my_project_name.com,my_project_name.sa`
 - `DJANGO_SECRET_KEY` = `********`
 - `REST_SIGNING_KEY` = `********`
 - `EMAIL_HOST_PASSWORD` = `********`
 - `AWS_ACCESS_KEY_ID` = `********`
 - `AWS_SECRET_ACCESS_KEY` = `********`
+- `SMS_TOKEN` = `********`
 - `DATABASE_URL` = `postgres://***:*****@pg.com:5432/***`
 
 
