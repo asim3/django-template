@@ -49,3 +49,6 @@ SIMPLE_JWT = {
     # 'USER_ID_FIELD': 'username',
     # 'USER_ID_CLAIM': 'my_user_name',
 }
+
+if not SIMPLE_JWT.get("SIGNING_KEY", None):
+    raise ValueError("The SIGNING_KEY setting must not be empty.")
