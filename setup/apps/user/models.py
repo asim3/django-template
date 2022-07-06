@@ -37,3 +37,11 @@ class OneTimePassword(Model):
     def delete_expired(cls):
         expired_date = timezone.now() - OTP_DEFAULT_AGE
         cls.objects.filter(created_on__lt=expired_date).delete()
+
+
+def get_permissions_as_str(self):
+    user_permissions = [str(obj) for obj in self.get_all_permissions()]
+    return ",".join(user_permissions)
+
+
+User.add_to_class("get_permissions_as_str", get_permissions_as_str)

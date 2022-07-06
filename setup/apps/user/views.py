@@ -12,6 +12,7 @@ from django.contrib.auth.views import (
 )
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.generics import (
     CreateAPIView,
     RetrieveAPIView,
@@ -20,6 +21,8 @@ from rest_framework.generics import (
 from .forms import RegistrationForm, UserPasswordResetForm
 from .mixins import SendEmailVerificationMixin, EmailVerificationConfirmMixin
 from .serializers import (
+    TokenLoginSerializer,
+    RefreshAccessSerializer,
     RegisterSerializer,
     UserInfoSerializer,
     CreateOneTimePasswordSerializer,
@@ -67,6 +70,22 @@ class UserPasswordResetConfirmView(PasswordResetConfirmView):
 
 class UserPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'user/password_reset_complete.html'
+
+
+class TokenLoginAPIView(TokenObtainPairView):
+    """
+    Takes a set of user credentials and returns an access and refresh JSON web
+    token pair to prove the authentication of those credentials.
+    """
+    serializer_class = TokenLoginSerializer
+
+
+class TokenRefreshAPIView(TokenRefreshView):
+    """
+    Takes a refresh type JSON web token and returns an access type JSON web
+    token if the refresh token is valid.
+    """
+    serializer_class = RefreshAccessSerializer
 
 
 class RegisterAPIView(CreateAPIView):

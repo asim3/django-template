@@ -40,6 +40,50 @@ class LoginAPITest(BaseTestCase):
         self.assertEqual(AccessToken(response.json()["access"]).get(
             "user_id"), user.id)
 
+    def test_customized_access_token(self):
+        data = {"username": "testuser", "password": "my_password"}
+        user = self.add_new_user(data)
+        user.first_name = "test first name"
+        user.last_name = "test last name"
+        user.email = "email"
+        user.save()
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn('access', response.json().keys())
+        access_token = AccessToken(response.json()["access"])
+        self.assertEqual(access_token.payload["user_id"],
+                         user.id)
+        self.assertEqual(access_token.payload["username"],
+                         user.get_username())
+        self.assertEqual(access_token.payload["short_name"],
+                         user.get_short_name())
+        self.assertEqual(access_token.payload["full_name"],
+                         user.get_full_name())
+        self.assertEqual(access_token.payload["permissions"],
+                         user.get_permissions_as_str())
+
+    def test_customized_refresh_token(self):
+        data = {"username": "testuser", "password": "my_password"}
+        user = self.add_new_user(data)
+        user.first_name = "test first name"
+        user.last_name = "test last name"
+        user.email = "email"
+        user.save()
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn('refresh', response.json().keys())
+        refresh_token = RefreshToken(response.json()["refresh"])
+        self.assertEqual(refresh_token.payload["user_id"],
+                         user.id)
+        self.assertEqual(refresh_token.payload["username"],
+                         user.get_username())
+        self.assertEqual(refresh_token.payload["short_name"],
+                         user.get_short_name())
+        self.assertEqual(refresh_token.payload["full_name"],
+                         user.get_full_name())
+        self.assertEqual(refresh_token.payload["permissions"],
+                         user.get_permissions_as_str())
+
 
 class RefreshAPITest(BaseTestCase):
     """
@@ -74,6 +118,37 @@ class RefreshAPITest(BaseTestCase):
         self.assertIn('access', response.json().keys())
         access_token = AccessToken(response.json()["access"])
         self.assertEqual(access_token.get("user_id"), user.id)
+
+    def test_customized_access_token(self):
+        user = self.get_user("testuser")
+        user.first_name = "test first name"
+        user.last_name = "test last name"
+        user.email = "email"
+        user.save()
+        data = self.get_user_refresh_token("testuser")
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertIn('access', response.json().keys())
+        access_token = AccessToken(response.json()["access"])
+        self.assertEqual(access_token.payload["user_id"], user.id)
+        self.assertEqual(access_token.payload["username"], user.get_username())
+        self.assertEqual(
+            access_token.payload["short_name"], user.get_short_name())
+        self.assertEqual(
+            access_token.payload["full_name"], user.get_full_name())
+        self.assertEqual(access_token.payload["permissions"],
+                         user.get_permissions_as_str())
+
+    def test_customized_access_token_keys(self):
+        data = self.get_user_refresh_token("testuser")
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        access_token = AccessToken(response.json()["access"])
+        self.assertIn("user_id", access_token.payload.keys())
+        self.assertIn("username", access_token.payload.keys())
+        self.assertIn("short_name", access_token.payload.keys())
+        self.assertIn("full_name", access_token.payload.keys())
+        self.assertIn("permissions", access_token.payload.keys())
 
 
 class UserInfoAPITest(BaseTestCase):

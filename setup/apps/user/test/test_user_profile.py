@@ -1,5 +1,5 @@
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission, Group
 
 from user.models import Profile
 
@@ -30,3 +30,26 @@ class ProfileTest(BaseTestCase):
         new_profile = Profile.objects.get(phone=new_phone)
         self.assertEqual(new_profile.user, user_1)
         self.assertEqual(new_profile.is_email_verified, False)
+
+
+class UserPermissionsTest(BaseTestCase):
+    """
+    Test User get all permissions as str
+    """
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            "test_username",
+            "test@user.com",
+            "pass",
+            first_name="my first name",
+            last_name="my last name"
+        )
+        self.user.user_permissions.set(
+            Permission.objects.filter(codename__startswith="view")
+        )
+
+    def test_permission_list_as_str(self):
+        permissions = [obj for obj in self.user.get_all_permissions()]
+        user_permissions = ",".join(permissions)
+        self.assertEqual(self.user.get_permissions_as_str(), user_permissions)

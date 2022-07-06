@@ -1,11 +1,11 @@
 from django.utils.translation import gettext_lazy as _
 from django.test import TestCase
 from django.contrib.auth.models import User
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED
 
 from utilities.utils import generate_random_name
 from user.models import Profile
+from user.tokens import CustomizedRefreshToken
 
 
 class BaseTestCase(TestCase):
@@ -46,7 +46,7 @@ class BaseTestCase(TestCase):
 
     def get_user_token(self, username):
         user = self.get_user(username)
-        refresh = RefreshToken.for_user(user)
+        refresh = CustomizedRefreshToken.for_user(user)
         return {
             'refresh': str(refresh),
             'access': str(refresh.access_token),

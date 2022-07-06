@@ -36,7 +36,7 @@ paths:
       - ar
   /ar/v1/user/login/:
     post:
-      operationId: createTokenObtainPair
+      operationId: createTokenLogin
       description: 'Takes a set of user credentials and returns an access and refresh
         JSON web
 
@@ -46,19 +46,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: '#/components/schemas/TokenLogin'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: '#/components/schemas/TokenLogin'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: '#/components/schemas/TokenLogin'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenObtainPair'
+                $ref: '#/components/schemas/TokenLogin'
           description: ''
       tags:
       - ar
@@ -117,7 +117,7 @@ paths:
       - ar
   /ar/v1/user/refresh/:
     post:
-      operationId: createTokenRefresh
+      operationId: createRefreshAccess
       description: 'Takes a refresh type JSON web token and returns an access type
         JSON web
 
@@ -127,19 +127,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/RefreshAccess'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/RefreshAccess'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/RefreshAccess'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenRefresh'
+                $ref: '#/components/schemas/RefreshAccess'
           description: ''
       tags:
       - ar
@@ -215,7 +215,7 @@ components:
       - key
       - image_url
       - large_image_url
-    TokenObtainPair:
+    TokenLogin:
       type: object
       properties:
         username:
@@ -264,7 +264,7 @@ components:
       required:
       - phone
       - token
-    TokenRefresh:
+    RefreshAccess:
       type: object
       properties:
         refresh:

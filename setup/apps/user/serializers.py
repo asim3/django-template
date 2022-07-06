@@ -1,9 +1,13 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer, CharField, ValidationError, ModelSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
+from rest_framework_simplejwt.serializers import (
+    TokenObtainPairSerializer,
+    TokenRefreshSerializer,
+)
+
 from utilities.forms import CaptchaTestForm
 from utilities.utils import (
     clean_phone_number,
@@ -15,6 +19,15 @@ from utilities.utils import (
 
 from .models import Profile, OneTimePassword
 from .forms import RegistrationForm
+from .tokens import CustomizedRefreshToken
+
+
+class TokenLoginSerializer(TokenObtainPairSerializer):
+    token_class = CustomizedRefreshToken
+
+
+class RefreshAccessSerializer(TokenRefreshSerializer):
+    token_class = CustomizedRefreshToken
 
 
 class RegisterSerializer(Serializer):
@@ -47,7 +60,7 @@ class RegisterSerializer(Serializer):
         form = self.get_form(validated_data)
         if form.is_valid():
             user = form.save()
-            token_refresh = RefreshToken.for_user(user)
+            token_refresh = CustomizedRefreshToken.for_user(user)
             return {
                 "username": user.username,
                 "password": "password",
@@ -167,7 +180,7 @@ class ValidateOneTimePasswordSerializer(Serializer):
     def create(self, validated_data):
         phone = validated_data.get("phone")
         user = Profile.objects.get(phone=phone).user
-        token_refresh = RefreshToken.for_user(user)
+        token_refresh = CustomizedRefreshToken.for_user(user)
         return {
             "refresh": str(token_refresh),
             "access": str(token_refresh.access_token),

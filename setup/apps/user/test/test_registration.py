@@ -156,6 +156,36 @@ class RegisterAPITest(BaseTestCase):
         self.assertEqual(AccessToken(response.json()["access"]).get(
             "user_id"), user.id)
 
+    def test_customized_refresh_token(self):
+        response = self.client.post(self.url, data={
+            "username": "test@user.com",
+            "password": "my_password",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        })
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        refresh_token = RefreshToken(response.json()["refresh"])
+        self.assertIn("user_id", refresh_token.payload.keys())
+        self.assertIn("username", refresh_token.payload.keys())
+        self.assertIn("short_name", refresh_token.payload.keys())
+        self.assertIn("full_name", refresh_token.payload.keys())
+        self.assertIn("permissions", refresh_token.payload.keys())
+
+    def test_customized_access_token(self):
+        response = self.client.post(self.url, data={
+            "username": "test@user.com",
+            "password": "my_password",
+            "captcha_key": "my-test",
+            "captcha_token": "PASSED",
+        })
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        access_token = AccessToken(response.json()["access"])
+        self.assertIn("user_id", access_token.payload.keys())
+        self.assertIn("username", access_token.payload.keys())
+        self.assertIn("short_name", access_token.payload.keys())
+        self.assertIn("full_name", access_token.payload.keys())
+        self.assertIn("permissions", access_token.payload.keys())
+
 
 class EmailVerificationTest(BaseTestCase):
     """
