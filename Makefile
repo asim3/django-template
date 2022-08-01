@@ -32,7 +32,8 @@ install: venv sql-backup
 	- ${CD} python3 manage.py collectstatic --noinput
 
 
-init: run-setup install
+init: run-setup
+	$$(make install)
 
 
 # make test args=my_app
