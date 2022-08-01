@@ -15,9 +15,8 @@ export REST_SIGNING_KEY=rest-top-secret
 main: run
 
 
-init: 
+run-setup: 
 	./setup/set-new-django-project.bash
-	echo -e "#####################################\n#                                   #\n#    Please Run [ make install ]    #\n#                                   #\n#####################################"
 
 
 venv:
@@ -31,6 +30,9 @@ install: venv sql-backup
 	${CD} python3 manage.py migrate
 	- ${CD} python3 manage.py generateschema --file ./templates/api/openapi-schema.yaml
 	- ${CD} python3 manage.py collectstatic --noinput
+
+
+init: run-setup install
 
 
 # make test args=my_app
