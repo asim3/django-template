@@ -33,7 +33,7 @@ install: venv sql-backup
 
 
 init: run-setup
-	$$(make install)
+	eval "make install"
 
 
 # make test args=my_app
