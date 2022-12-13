@@ -3,13 +3,39 @@
 
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
 
-{% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/main.css" %}">
+        
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
+
+    <style>
+        @font-face {
+        font-family: "main-font-regular";
+        src: local("main-font-regular"),
+            url("{% static "fonts/Tajawal/Tajawal-Regular.ttf" %}")
+            format("TrueType");
+        }
+
+        @font-face {
+        font-family: "main-font-bold";
+        src: local("main-font-bold"),
+            url("{% static "fonts/Tajawal/Tajawal-Bold.ttf" %}") format("TrueType");
+        }
+    </style>
 {% endblock %}
+
+
+{% block extrahead %}{% endblock %}
+
+
+{% block branding %}
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">
+            {{ site_header|default:_('Django administration') }}
+        </a>
+    </h1>
+{% endblock %}
+
 
 {% block nav-global %}{% endblock %}
-
-
-{% block extrahead %}
-    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
-{% endblock %}

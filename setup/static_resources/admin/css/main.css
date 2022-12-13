@@ -1,0 +1,101 @@
+:root {
+    --primary: #eb6010;
+    --secondary: #eb6010;
+    --accent: #fff;
+    --primary-fg: #fff;
+    --body-fg: #212529;
+    --body-bg: #fff;
+    --body-quiet-color: #666;
+    --body-loud-color: #000;
+    --header-color: #fff;
+    --header-branding-color: var(--accent);
+    --header-bg: var(--secondary);
+    --header-link-color: var(--primary-fg);
+    --breadcrumbs-fg: #c4dce8;
+    --breadcrumbs-link-fg: var(--body-bg);
+    --breadcrumbs-bg: var(--primary);
+    --link-fg: #447e9b;
+    --link-hover-color: #036;
+    --link-selected-fg: #5b80b2;
+    --hairline-color: #e8e8e8;
+    --border-color: #ccc;
+    --error-fg: #ba2121;
+    --message-success-bg: #dfd;
+    --message-warning-bg: #ffc;
+    --message-error-bg: #ffefef;
+    --darkened-bg: #f8f8f8;
+    --selected-bg: #e4e4e4;
+    --selected-row: #ffc;
+    --button-fg: #fff;
+    --button-bg: var(--primary);
+    --button-hover-bg: #fa6712;
+    --default-button-bg: var(--secondary);
+    --default-button-hover-bg: #fa6712;
+    --close-button-bg: #888;
+    --close-button-hover-bg: #747474;
+    --delete-button-bg: #ba2121;
+    --delete-button-hover-bg: #a41515;
+    --object-tools-fg: var(--button-fg);
+    --object-tools-bg: var(--close-button-bg);
+    --object-tools-hover-bg: var(--close-button-hover-bg);
+}
+
+.font-regular {
+    font-family: main-font-regular, TimesNewRoman, sans-serif;
+}
+
+.font-bold {
+    font-family: main-font-bold, TimesNewRoman, sans-serif;
+}
+
+head,
+body {
+    width: 100vw;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: main-font-regular, TimesNewRoman, sans-serif;
+}
+
+input,
+button,
+submit {
+    border: none;
+}
+
+a,
+a:hover {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.background-center {
+    width: 30%;
+    height: 100px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    -o-background-size: cover;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
+}
+
+.errorlist {
+    color: red;
+    font-weight: bold;
+}
+
+.captcha {
+    margin-bottom: 0.5rem;
+}
+
+*:focus {
+    outline: none;
+}
+
+input, textarea, select, .form-row p, form .button {
+    font-family: inherit;
+}
