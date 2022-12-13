@@ -8,6 +8,9 @@ ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements.txt .
 
+# fixed Dockerfile https://dl-cdn.alpinelinux.org/alpine
+RUN sed -i 's/https/http/' /etc/apk/repositories && apk add curl
+
 RUN apk update && apk --no-cache add --virtual .build-dependencies \
     build-base \
     python3-dev \
