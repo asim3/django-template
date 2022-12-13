@@ -1,32 +1,42 @@
-{% load static i18n %}
-{% get_current_language as LANGUAGE_CODE %}
+{% load static i18n %} {% get_current_language as LANGUAGE_CODE %}
 
 <head>
-    <meta charset="utf-8">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>{% trans 'Website Title' %}</title>
-    
-    {% if LANGUAGE_CODE|slice:":2" == 'ar' %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.rtl.min.css' %}"/>
-    {% else %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
-    {% endif %}
+  <meta charset="utf-8" />
 
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
-    
-    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-        @font-face {
-            font-family:'main-font-regular';
-            src: local('main-font-regular'), url('{% static 'fonts/Tajawal/Tajawal-Regular.ttf' %}') format('TrueType');
-        }
+  <title>{% trans 'Website Title' %}</title>
 
-        @font-face {
-            font-family:'main-font-bold';
-            src: local('main-font-bold'), url('{% static 'fonts/Tajawal/Tajawal-Bold.ttf' %}') format('TrueType');
-        }
-    </style>
+  {% if LANGUAGE_CODE|slice:":2" == 'ar' %}
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="{% static 'css/bootstrap.rtl.min.css' %}"
+  />
+  {% else %}
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="{% static 'css/bootstrap.min.css' %}"
+  />
+  {% endif %}
+
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
+
+  <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
+
+  <style>
+    @font-face {
+      font-family: "main-font-regular";
+      src: local("main-font-regular"),
+        url("{% static "fonts/Tajawal/Tajawal-Regular.ttf" %}")
+          format("TrueType");
+    }
+
+    @font-face {
+      font-family: "main-font-bold";
+      src: local("main-font-bold"),
+        url("{% static "fonts/Tajawal/Tajawal-Bold.ttf" %}") format("TrueType");
+    }
+  </style>
 </head>

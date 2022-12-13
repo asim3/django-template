@@ -1,33 +1,35 @@
-{% load static %}
-{% load i18n %}
+{% load static i18n %}
 
 <div class="container">
-    <div class="row row-cols-1 row-cols-md-3">
+  <div class="row row-cols-1 row-cols-md-3">
+    <div class="">{% trans '© Footer Title' %}</div>
 
-        <div class="">
-            {% trans '© Footer Title' %}
-        </div>
-
-        
-        <div class="">
-            {% trans 'Phone' %}:
-            <a href="tel:00966000000000">
-                <span dir="ltr">+966 00 0000000</span>
-            </a>
-        </div>
-        
-        
-        <div class="">
-            {% trans 'Email' %}:
-            <a href="mailto:info@info.com">
-                info@info.com
-            </a>
-        </div>
-        
+    <div class="">
+      {% trans 'Phone' %}:
+      <a href="tel:00966000000000">
+        <span dir="ltr">+966 00 0000000</span>
+      </a>
     </div>
+
+    <div class="">
+      {% trans 'Email' %}:
+      <a href="mailto:info@info.com"> info@info.com </a>
+    </div>
+  </div>
 </div>
 
-
-<script type="text/javascript" charset="UTF-8" src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
-<script type="text/javascript" charset="UTF-8" src="{% static 'js/bootstrap.min.js' %}"></script>
-<script type="text/javascript" charset="UTF-8" src="{% static 'js/main.js' %}"></script>
+<script
+  type="text/javascript"
+  charset="UTF-8"
+  src="{% static 'js/jquery-3.6.0.min.js' %}"
+></script>
+<script
+  type="text/javascript"
+  charset="UTF-8"
+  src="{% static 'js/bootstrap.min.js' %}"
+></script>
+<script
+  type="text/javascript"
+  charset="UTF-8"
+  src="{% static 'js/main.js' %}"
+></script>

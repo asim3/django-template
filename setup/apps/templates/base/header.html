@@ -1,26 +1,32 @@
-{% load static %}
-{% load i18n %}
-
+{% load static i18n %}
 
 <div class="container">
-
-
   <a class="navbar-brand m-0 font-bold" href="#">
-    <img src="{% static 'img/logo.svg' %}" class="d-inline-block">
+    <img src="{% static 'img/logo.svg' %}" class="d-inline-block" />
     {% trans 'Website Title' %}
   </a>
 
-
-  <div class="navbar-toggler border-0" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-    aria-controls="navbarNav" aria-expanded="false">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="navbar-toggler-icon" viewBox="0 0 16 16">
-      <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+  <div
+    class="navbar-toggler border-0"
+    data-bs-toggle="collapse"
+    data-bs-target="#navbarNav"
+    aria-controls="navbarNav"
+    aria-expanded="false"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      class="navbar-toggler-icon"
+      viewBox="0 0 16 16"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
+      />
     </svg>
   </div>
-
 
   <div class="collapse navbar-collapse" id="navbarNav">
     {% include "base/navigation_items.html" %}
   </div>
-
 </div>
