@@ -75,7 +75,7 @@ data-migrations:
 
 
 check:
-	${CD} python manage.py check --deploy \
+	${CD} python3 manage.py check --deploy \
 	--settings ${PROJECT_NAME}.settings.production \
 	--fail-level WARNING \
 	&& echo 'production settings looks good'
