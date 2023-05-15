@@ -5,6 +5,11 @@ from .main import *
 
 DEBUG = False
 
+ALLOWED_HOSTS = [
+    "asim.sa",
+    "asim.com",
+]
+
 MAX_CONN_AGE = 600
 
 DATABASES = {
