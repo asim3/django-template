@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 
-ACTIVATE=source ./.venv/bin/activate && source .env &&
+ACTIVATE=source ~/.venv/${PROJECT_NAME}/bin/activate && source .env &&
 
 PROJECT_NAME=my_project_name
 
@@ -15,7 +15,7 @@ run-setup:
 
 
 venv:
-	if [ ! -d ./.venv ]; then python3 -m venv ./.venv; fi;
+	if [ ! -d ~/.venv/${PROJECT_NAME} ]; then python3 -m venv ~/.venv/${PROJECT_NAME}; fi;
 
 
 install: venv sql-backup
@@ -33,7 +33,7 @@ init: run-setup
 
 # make test args=my_app
 tests: check
-	if [ -d ./.venv ]; then ${CD} python3 manage.py test ${args}; fi;
+	if [ -d ~/.venv/${PROJECT_NAME} ]; then ${CD} python3 manage.py test ${args}; fi;
 
 
 # make new app=my_app
