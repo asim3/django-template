@@ -47,6 +47,8 @@ setup-kubernetes() {
 	mv ./setup/Dockerfile ./
 	mv ./setup/docker-compose.yaml ./
 	mv ./setup/entrypoint.sh ./
+	mv ./setup/.env.sample ./.env.sample
+	mv ./setup/.env.sample ./.env
 }
 
 

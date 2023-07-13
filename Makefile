@@ -1,15 +1,10 @@
 SHELL=/bin/bash
 
-ACTIVATE=source ./.venv/bin/activate &&
+ACTIVATE=source ./.venv/bin/activate && source .env &&
 
 PROJECT_NAME=my_project_name
 
 CD=${ACTIVATE} cd ./${PROJECT_NAME} &&
-
-
-export DJANGO_DEBUG=True
-export DJANGO_SECRET_KEY=abcdefghijklmnopqrstuvwxyz0123456789!@%^&*(-_=+)50
-export REST_SIGNING_KEY=rest-top-secret
 
 
 main: run
