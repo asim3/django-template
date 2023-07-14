@@ -6,8 +6,10 @@ from .main import *
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    "asim.sa",
-    "asim.com",
+    "0.0.0.0",
+    "127.0.0.1",
+    "localhost",
+    "*.test.asimt.sa",
 ]
 
 MAX_CONN_AGE = 600
