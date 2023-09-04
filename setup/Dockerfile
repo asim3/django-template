@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye
+FROM python:3.10-slim-bullseye
 
 RUN apt-get -y update && apt-get -y install gcc python3-dev libpq-dev
 
