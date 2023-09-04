@@ -17,7 +17,7 @@ services:
     restart: on-failure
     depends_on:
       postgres:
-        condition: service_completed_successfully
+        condition: service_started
 
   collect_static:
     build: .
@@ -25,10 +25,11 @@ services:
     restart: on-failure
     depends_on:
       postgres:
-        condition: service_completed_successfully
+        condition: service_started
 
   app:
     build: .
+    command: python3 manage.py test
     environment:
       - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
       - DJANGO_SECRET_KEY="top-secret"
