@@ -45,12 +45,16 @@ setup-django-static() {
 }
 
 
+setup-dotenv() {
+	cp ./setup/.env.sample ./${name}/.env
+	mv ./setup/.env.sample ./${name}/.env.sample
+}
+
+
 setup-kubernetes() {
-	mv ./setup/Dockerfile ./
-	mv ./setup/docker-compose.yaml ./
-	mv ./setup/entrypoint.sh ./
-	mv ./setup/.env.sample ./.env.sample
-	cp ./.env.sample ./.env
+	mv ./setup/Dockerfile           ./
+	mv ./setup/docker-compose.yaml  ./
+	mv ./setup/entrypoint.sh        ./
 }
 
 
@@ -76,6 +80,7 @@ start-django-project
 update-project-name
 setup-django-settings
 setup-django-static
+setup-dotenv
 setup-kubernetes
 copy-django-apps
 setup-heroku

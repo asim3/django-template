@@ -17,8 +17,5 @@ jobs:
       - name: Create New Django Project
         run: if [ -x ./setup/set-new-django-project.bash ]; then echo "test_project" | make init; fi;
       
-      - name: Install requirements
-        run: make install
-      
       - name: Run All Tests
         run: make tests

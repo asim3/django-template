@@ -12,6 +12,7 @@ main: run
 init:
 	@sed -i -e 's/\r$$//' ./setup/set-new-django-project.bash
 	@./setup/set-new-django-project.bash
+	eval "make install"
 
 
 venv:
