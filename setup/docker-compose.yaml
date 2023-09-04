@@ -12,7 +12,7 @@ services:
       - POSTGRES_PASSWORD=psql-pass
 
   migrate:
-    image: busybox:stable
+    build: .
     command: python manage.py migrate
     restart: on-failure
     depends_on:
@@ -20,7 +20,7 @@ services:
         condition: service_completed_successfully
 
   collect_static:
-    image: busybox:stable
+    build: .
     command: python manage.py collectstatic --noinput
     restart: on-failure
     depends_on:
