@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 
-ACTIVATE=source ~/.venv/${PROJECT_NAME}/bin/activate && source .env &&
+ACTIVATE=source ~/.venv/${PROJECT_NAME}/bin/activate &&
 
 PROJECT_NAME=my_project_name
 
@@ -9,9 +9,13 @@ CD=${ACTIVATE} cd ./${PROJECT_NAME} &&
 
 main: run
 
+init: venv run-setup install
 
-run-setup: 
-	./setup/set-new-django-project.bash
+
+run-setup:
+	${ACTIVATE} pip3 install Django==3.2
+	@sed -i -e 's/\r$$//' ./setup/set-new-django-project.bash
+	@./setup/set-new-django-project.bash
 
 
 venv:
@@ -25,10 +29,6 @@ install: venv sql-backup
 	${CD} python3 manage.py migrate
 	- ${CD} python3 manage.py generateschema --file ./templates/api/openapi-schema.yaml
 	- ${CD} python3 manage.py collectstatic --noinput
-
-
-init: run-setup
-	eval "make install"
 
 
 # make test args=my_app
@@ -93,13 +93,3 @@ backup:
 sql-backup:
 	${CD} mkdir -p ./media/backup
 	- ${CD} cp ./db.sqlite3 ./media/backup/db_$$(date +'%Y-%m-%d_%H-%M-%S').sqlite3
-
-
-heroku:
-	heroku git:remote -a ${PROJECT_NAME}-staging
-	git push heroku main
-
-
-heroku-production:
-	heroku git:remote -a ${PROJECT_NAME}-production
-	git push heroku main

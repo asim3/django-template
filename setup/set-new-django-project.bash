@@ -11,10 +11,6 @@ read name
 
 
 start-django-project() {
-	python3 -m venv .venv
-	source ./.venv/bin/activate
-
-	pip3 install Django==3.2
 	django-admin startproject ${name}
 	
 	mv ./setup/requirements.txt ./requirements.txt
