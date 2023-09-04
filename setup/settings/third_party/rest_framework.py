@@ -1,7 +1,8 @@
 from datetime import timedelta
+from dotenv import dotenv_values
 
-import os
 
+DOTENV_CONFIG = dotenv_values(".env")
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
@@ -40,7 +41,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "SIGNING_KEY": os.environ.get("REST_SIGNING_KEY"),
+    "SIGNING_KEY": DOTENV_CONFIG["REST_SIGNING_KEY"],
     "ALGORITHM": "HS512",
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -49,6 +50,3 @@ SIMPLE_JWT = {
     # 'USER_ID_FIELD': 'username',
     # 'USER_ID_CLAIM': 'my_user_name',
 }
-
-if not SIMPLE_JWT.get("SIGNING_KEY", None):
-    raise ValueError("The SIGNING_KEY setting must not be empty.")

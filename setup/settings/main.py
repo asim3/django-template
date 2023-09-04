@@ -1,15 +1,16 @@
 from pathlib import Path
 from django.urls import reverse_lazy
+from dotenv import dotenv_values
 
 from .base import *
 from .third_party.rest_framework import *
 
-import os
 
+DOTENV_CONFIG = dotenv_values(".env")
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = DOTENV_CONFIG["DJANGO_SECRET_KEY"]
 
 # DEBUG = os.getenv('DJANGO_DEBUG', False) in (True, 'True')
 
@@ -101,7 +102,7 @@ EMAIL_HOST = "smtp.gmail.com"
 
 EMAIL_HOST_USER = "info@gmail.com"
 
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = DOTENV_CONFIG.get('EMAIL_HOST_PASSWORD')
 
 EMAIL_PORT = 587
 
@@ -120,6 +121,6 @@ OTP_DEFAULT_AGE = 60
 
 SMS_BASE_URL = "https://api.taqnyat.sa/v1/messages"
 
-SMS_TOKEN = os.environ.get('SMS_TOKEN')
+SMS_TOKEN = DOTENV_CONFIG.get('SMS_TOKEN')
 
 SMS_DEFAULT_FROM = "django"

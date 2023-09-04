@@ -9,11 +9,7 @@ CD=${ACTIVATE} cd ./${PROJECT_NAME} &&
 
 main: run
 
-init: venv run-setup install
-
-
-run-setup:
-	${ACTIVATE} pip3 install Django==3.2
+init:
 	@sed -i -e 's/\r$$//' ./setup/set-new-django-project.bash
 	@./setup/set-new-django-project.bash
 

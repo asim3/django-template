@@ -11,9 +11,15 @@ read name
 
 
 start-django-project() {
-	django-admin startproject ${name}
+	if [ ! -d ~/.venv/${name} ]; then python3 -m venv ~/.venv/${name}; fi;
+
+	source ~/.venv/${name}/bin/activate
 	
 	mv ./setup/requirements.txt ./requirements.txt
+	
+	pip3 install -r ./requirements.txt
+
+	django-admin startproject ${name}
 }
 
 

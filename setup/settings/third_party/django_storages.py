@@ -1,5 +1,7 @@
-import os
+from dotenv import dotenv_values
 
+
+DOTENV_CONFIG = dotenv_values(".env")
 
 AWS_S3_FILE_OVERWRITE = False
 
@@ -8,9 +10,9 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_ACCESS_KEY_ID = DOTENV_CONFIG.get('AWS_ACCESS_KEY_ID')
 
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = DOTENV_CONFIG.get('AWS_SECRET_ACCESS_KEY')
 
 AWS_STORAGE_BUCKET_NAME = 'project-name'
 
