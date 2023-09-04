@@ -1,28 +1,48 @@
-version: "3.3"
-# https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/#gunicorn
+version: "3.8"
 
 services:
-  postgres-compose:
+  postgres:
     image: postgres
     restart: unless-stopped
-    container_name: my_project_name-db
     volumes:
-      - ./compose-data/db:/var/lib/postgresql/data
+      - my_project_name-db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=psql-db
       - POSTGRES_USER=psql-user
       - POSTGRES_PASSWORD=psql-pass
 
-  django-compose:
-    build: .
-    container_name: my_project_name-app
-    ports:
-      - "8000:8000"
+  migrate:
+    image: busybox:stable
+    command: python manage.py migrate
+    restart: on-failure
     depends_on:
-      - postgres-compose
+      postgres:
+        condition: service_completed_successfully
+
+  collect_static:
+    image: busybox:stable
+    command: python manage.py collectstatic --noinput
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_completed_successfully
+
+  app:
+    build: .
     environment:
       - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
       - DJANGO_SECRET_KEY="top-secret"
       - DJANGO_DEBUG=True
       - REST_SIGNING_KEY="rest-top-secret"
       - DATABASE_URL=postgresql://psql-user:psql-pass@postgres-compose:5432/psql-db
+    ports:
+      - "8000:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      collect_static:
+        condition: service_completed_successfully
+
+
+volumes:
+  my_project_name-db-data:
