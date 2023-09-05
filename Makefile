@@ -17,6 +17,7 @@ init:
 
 venv:
 	if [ ! -d ~/.venv/${PROJECT_NAME} ]; then python3 -m venv ~/.venv/${PROJECT_NAME}; fi;
+	if [ ! -f ./${PROJECT_NAME}/.env ]; then cp ./${PROJECT_NAME}/.env.sample ./${PROJECT_NAME}/.env; fi;
 
 
 install: venv sql-backup
