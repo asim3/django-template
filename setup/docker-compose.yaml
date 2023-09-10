@@ -14,6 +14,12 @@ services:
   migrate:
     build: .
     command: python manage.py migrate
+    environment:
+      - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
+      - DJANGO_SECRET_KEY="top-secret"
+      - DJANGO_DEBUG=True
+      - REST_SIGNING_KEY="rest-top-secret"
+      - DATABASE_URL=postgresql://psql-user:psql-pass@postgres-compose:5432/psql-db
     restart: on-failure
     depends_on:
       postgres:
@@ -22,6 +28,12 @@ services:
   collect_static:
     build: .
     command: python manage.py collectstatic --noinput
+    environment:
+      - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
+      - DJANGO_SECRET_KEY="top-secret"
+      - DJANGO_DEBUG=True
+      - REST_SIGNING_KEY="rest-top-secret"
+      - DATABASE_URL=postgresql://psql-user:psql-pass@postgres-compose:5432/psql-db
     restart: on-failure
     depends_on:
       postgres:
@@ -29,7 +41,6 @@ services:
 
   app:
     build: .
-    command: python3 manage.py test
     environment:
       - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
       - DJANGO_SECRET_KEY="top-secret"
