@@ -1,5 +1,11 @@
-name: Run All Django Tests
-on: [ push ]
+name: Run Django Tests
+
+on:
+  push:
+    branches:
+      - main
+
+
 jobs:
   run-tests:
     runs-on: ubuntu-latest
@@ -16,6 +22,9 @@ jobs:
       
       - name: Create New Django Project
         run: if [ -x ./setup/set-new-django-project.bash ]; then echo "test_project" | make init; fi;
+      
+      - name: Copy Env File
+        run: cp my_project_name/.env-example my_project_name/.env
       
       - name: Install Requirements
         run: make install
