@@ -1,4 +1,6 @@
-FROM python:3.10-slim-bullseye AS builder
+FROM python:3.11-slim-bullseye AS base
+
+FROM base AS builder
 
 RUN apt-get -y update && apt-get -y install gcc python3-dev libpq-dev
 
@@ -7,14 +9,16 @@ COPY ./requirements.txt /requirements.txt
 RUN pip wheel --wheel-dir=/root/wheels -r /requirements.txt
 
 
-# https://morioh.com/a/d777482dea93/how-to-building-minimal-docker-containers-for-python-applications
-FROM python:3.10-slim-bullseye
+
+FROM base
+
+RUN apt-get -y update && apt-get -y install libpq5
 
 RUN adduser --system --shell /bin/bash --uid 1000 --group --disabled-password --disabled-login d_user
 
 ENV APP_HOME=/home/d_user/web
 
-RUN install -d -m 0750 -o d_user -g d_user $APP_HOME $APP_HOME/tmp
+RUN install -d -m 0750 -o d_user -g d_user $APP_HOME
 
 COPY --from=builder /root/wheels /root/wheels
 
