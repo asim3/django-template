@@ -52,9 +52,9 @@ setup-dotenv() {
 }
 
 
-setup-kubernetes() {
-	mv ./setup/Dockerfile           ./
-	mv ./setup/docker-compose.yaml  ./
+setup-docker() {
+	mv ./setup/Dockerfile          ./
+	mv ./setup/docker-compose.yml  ./
 }
 
 
@@ -81,7 +81,7 @@ update-project-name
 setup-django-settings
 setup-django-static
 setup-dotenv
-setup-kubernetes
+setup-docker
 copy-django-apps
 setup-heroku
 remove-setup-files
