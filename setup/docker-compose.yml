@@ -8,9 +8,9 @@ services:
     volumes:
       - my_project_name-db:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=pg_db
-      - POSTGRES_USER=pg_user
-      - POSTGRES_PASSWORD=pg_pass
+      - POSTGRES_DB=db_pg
+      - POSTGRES_USER=user_pg
+      - POSTGRES_PASSWORD=pass_pg
  
   app:
     build: .
@@ -21,7 +21,7 @@ services:
       - postgresql
     environment:
       - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
-      - DATABASE_URL=postgres://pg_user:pg_pass@postgresql:5432/pg_db
+      - DATABASE_URL=postgres://user_pg:pass_pg@postgresql:5432/db_pg
 
 volumes:
   my_project_name-db:
