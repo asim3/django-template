@@ -115,7 +115,11 @@ class UserPasswordResetConfirmTest(BaseTestCase):
     )
     reset_url_token = reverse_lazy(
         "password_reset_confirm",
-        kwargs={"uidb64": "MQ", "token": "set-password"}
+        kwargs={"uidb64": "ODM", "token": "set-password"}
+    )
+    reset_url_token_post = reverse_lazy(
+        "password_reset_confirm",
+        kwargs={"uidb64": "ODQ", "token": "set-password"}
     )
     methods_not_allowed = None
 
@@ -162,7 +166,7 @@ class UserPasswordResetConfirmTest(BaseTestCase):
     def test_success_post_response(self):
         response = self.client.post(self.get_reset_confirm_url())
         self.assertEqual(response.status_code, HTTP_302_FOUND)
-        self.assertEqual(response.url, self.reset_url_token)
+        self.assertEqual(response.url, self.reset_url_token_post)
         data = {
             "new_password1": "my-new-test-pass",
             "new_password2": "my-new-test-pass",
