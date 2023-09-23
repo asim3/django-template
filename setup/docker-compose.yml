@@ -8,9 +8,9 @@ services:
     volumes:
       - my_project_name-db:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=pg_db
+      - POSTGRES_USER=pg_user
+      - POSTGRES_PASSWORD=pg_pass
  
   app:
     build: .
@@ -21,12 +21,7 @@ services:
       - postgresql
     environment:
       - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
-      - SQL_ENGINE=django.db.backends.postgresql
-      - SQL_DATABASE=postgres
-      - SQL_USER=postgres
-      - SQL_PASSWORD=postgres
-      - SQL_HOST=postgresql
-      - SQL_PORT=5432
+      - DATABASE_URL=postgres://pg_user:pg_pass@postgresql:5432/pg_db
 
 volumes:
   my_project_name-db:
