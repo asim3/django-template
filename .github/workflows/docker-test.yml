@@ -1,0 +1,28 @@
+name: Run tests in Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docker_test:
+    runs-on: ubuntu-latest
+    name: Test on Docker
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create New Django Project
+        run: if [ -x ./setup/set-new-django-project.bash ]; then echo "test_project" | make init; fi;
+
+      - name: Copy Env File
+        run: cp my_project_name/.env-example my_project_name/.env
+
+      - name: Build Docker
+        run: docker compose rm --force && docker compose build
+
+      - name: Migrate Database
+        run: docker compose run app 'python3 manage.py migrate'
+
+      - name: Run All Django Tests
+        run: docker compose run app 'python3 manage.py test'

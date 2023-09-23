@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  postgresql:
+    image: postgres
+    restart: unless-stopped
+    container_name: my_project_name-db
+    volumes:
+      - my_project_name-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+ 
+  app:
+    build: .
+    container_name: my_project_name
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgresql
+    environment:
+      - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
+      - SQL_ENGINE=django.db.backends.postgresql
+      - SQL_DATABASE=postgres
+      - SQL_USER=postgres
+      - SQL_PASSWORD=postgres
+      - SQL_HOST=postgresql
+      - SQL_PORT=5432
+
+volumes:
+  my_project_name-db:
