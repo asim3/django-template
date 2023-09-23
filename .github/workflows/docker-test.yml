@@ -15,9 +15,6 @@ jobs:
       - name: Create New Django Project
         run: if [ -x ./setup/set-new-django-project.bash ]; then echo "test_project" | make init; fi;
 
-      - name: Copy Env File
-        run: cp my_project_name/.env-example my_project_name/.env
-
       - name: Build Docker
         run: docker compose rm --force && docker compose build
 

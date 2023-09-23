@@ -64,12 +64,6 @@ copy-django-apps() {
 }
 
 
-setup-heroku() {
-	echo "release: cd ${name} && python3 manage.py migrate" > ./Procfile
-	echo "web: gunicorn --chdir ${name} --workers 3 ${name}.wsgi" >> ./Procfile
-	echo "python-3.9.13" > ./runtime.txt
-}
-
 
 remove-setup-files() {
 	rm -rf ./setup/
@@ -83,5 +77,4 @@ setup-django-static
 setup-dotenv
 setup-docker
 copy-django-apps
-setup-heroku
 remove-setup-files

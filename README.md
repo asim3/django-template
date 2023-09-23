@@ -39,7 +39,6 @@ Django Template
         "AllowedOrigins": [
             "https://www.example1.com",
             "https://www.example2.com",
-            "https://project-staging.herokuapp.com"
         ],
         "ExposeHeaders": []
     }
