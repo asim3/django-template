@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  PROJECT_NAME: test_project
+
 jobs:
   docker_test:
     runs-on: ubuntu-latest
@@ -13,22 +16,21 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Create New Django Project
-        run: if [ -x ./setup/set-new-django-project.bash ]; then echo "test_project" | make init; fi;
-
+        run: if [ -x ./setup/set-new-django-project.bash ]; then echo ${PROJECT_NAME} | make init; fi;
 
       - name: Copy Env File
-        run: cp my_project_name/.env-example my_project_name/.env
+        run: cp ${PROJECT_NAME}/.env-example ${PROJECT_NAME}/.env
 
       - name: Build Docker
         run: >
           GIT_REF=$(git rev-parse --verify HEAD);
           docker image build --no-cache
-          -t asim3/my_project_name:${GIT_REF}
+          -t asim3/${PROJECT_NAME}:${GIT_REF}
           .
 
       - name: Run All Django Tests
         run: >
           GIT_REF=$(git rev-parse --verify HEAD);
           docker container run --rm
-          -e DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
-          asim3/my_project_name:${GIT_REF} 'python3 manage.py test'
+          -e DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.docker_dev
+          asim3/${PROJECT_NAME}:${GIT_REF} 'python3 manage.py test'
