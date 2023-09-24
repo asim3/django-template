@@ -18,11 +18,8 @@ jobs:
       - name: Create New Django Project
         run: if [ -x ./setup/set-new-django-project.bash ]; then echo ${PROJECT_NAME} | make init; fi;
 
-      - name: list files 2
-        run: ls -al ; ls -al ${PROJECT_NAME}
-
       - name: Copy Env File
-        run: cp ${PROJECT_NAME}/.env-example ${PROJECT_NAME}/.env
+        run: cp ${PROJECT_NAME}/.env.sample ${PROJECT_NAME}/.env
 
       - name: Build Docker
         run: >
