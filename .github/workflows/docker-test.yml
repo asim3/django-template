@@ -14,9 +14,14 @@ jobs:
     name: Test on Docker
     steps:
       - uses: actions/checkout@v3
+      - name: list files 1
+        run: ls -al ; ls -al ${PROJECT_NAME}
 
       - name: Create New Django Project
         run: if [ -x ./setup/set-new-django-project.bash ]; then echo ${PROJECT_NAME} | make init; fi;
+
+      - name: list files 2
+        run: ls -al ; ls -al ${PROJECT_NAME}
 
       - name: Copy Env File
         run: cp ${PROJECT_NAME}/.env-example ${PROJECT_NAME}/.env
