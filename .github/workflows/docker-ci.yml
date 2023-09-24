@@ -45,8 +45,9 @@ jobs:
       - name: Backup Staging Database
         run: pg_dump ${DATABASE_URL} > ~/backup.${GITHUB_REF_NAME:2}.sql
 
-#       - name: Restore Staging Database
-#         run: pg_dump ${DATABASE_URL} > /tmp/my_workflow_backup.0.sql
+      - name: Restore Staging Database
+        run: psql ${DATABASE_URL} -c "\l"
+        # run: psql ${DATABASE_URL} < ~/backup.${GITHUB_REF_NAME:2}.sql
 
 #       - name: Migrate Database
 #         run: python manage.py migrate
