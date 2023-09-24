@@ -1,4 +1,4 @@
-name: Build & Push Docker
+name: my_project_name CI/CD
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   docker_build:
-    runs-on: ubuntu-latest
+    runs-on: my_project_name-staging-runner-v3
     name: Build Docker Image
     steps:
       - name: Checkout
@@ -15,44 +15,31 @@ jobs:
 
       - name: Build Image
         run: >
-          docker image build
+          docker image build --no-cache
           -t asim3/my_project_name:${GITHUB_REF_NAME:2}
           -t asim3/my_project_name:latest
           .
 
-      - name: List Docker Images
-        run: docker image ls
 
-      - name: Run All Django Tests
-        run: docker run asim3/my_project_name:${GITHUB_REF_NAME:2} /bin/sh -c 'python3 manage.py test'
+  docker_push:
+    runs-on: my_project_name-staging-runner-v3
+    name: Push Image To Docker Hub
+    needs: docker_build
+    steps:
+      - name: Push Image
+        run: docker push asim3/my_project_name:${GITHUB_REF_NAME:2}
 
-#   docker_push:
-#     runs-on: ubuntu-latest
-#     name: Push Image To Docker Hub
-#     needs: docker_build
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v3
+      - name: Push Latest Image
+        run: docker push asim3/my_project_name:latest
 
-#       - name: Push
-#         run: docker push asim3/my_project_name:${GITHUB_REF_NAME:2}
 
-#       - name: Push Latest
-#         run: docker push asim3/my_project_name:latest
-
-#   database_backup:
-#     runs-on: ubuntu-latest
-#     name: Backup The Prod Database
-#     needs:
-#       - docker_build
-#       - docker_push
-#     if: ${{ always() }}
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v3
-
-#       - name: Backup Staging Database
-#         run: pg_dump postgresql://user_6:my-pass-6@192.168.122.161:5432/new_db_6 > /tmp/my_workflow_backup.0.sql
+  database_backup:
+    runs-on: my_project_name-staging-runner-v3
+    name: Backup The Prod Database
+    needs: docker_push
+    steps:
+      - name: Backup Staging Database
+        run: pg_dump postgresql://user_6:my-pass-6@192.168.122.161:5432/new_db_6 > ~/backup.${GITHUB_REF_NAME:2}.sql
 
 #       - name: Restore Staging Database
 #         run: pg_dump postgresql://user_6:my-pass-6@192.168.122.161:5432/new_db_6 > /tmp/my_workflow_backup.0.sql
