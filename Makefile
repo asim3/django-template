@@ -85,3 +85,7 @@ production:
 sql-backup:
 	${CD} mkdir -p ./media/backup
 	- ${CD} cp ./db.sqlite3 ./media/backup/db_$$(date +'%Y-%m-%d_%H-%M-%S').sqlite3
+
+tag:
+	git tag -a $$(git tag -l --sort=-creatordate 'v-*' | head -n 1 | awk -F. -v OFS=. '{$$NF += 1 ; print}') -m 'Added by $$(whoami) using Makefile v2'
+	git push origin --tags

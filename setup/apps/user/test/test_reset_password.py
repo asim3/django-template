@@ -115,11 +115,11 @@ class UserPasswordResetConfirmTest(BaseTestCase):
     )
     reset_url_token = reverse_lazy(
         "password_reset_confirm",
-        kwargs={"uidb64": "ODM", "token": "set-password"}
+        kwargs={"uidb64": "1111", "token": "set-password"}
     )
     reset_url_token_post = reverse_lazy(
         "password_reset_confirm",
-        kwargs={"uidb64": "ODQ", "token": "set-password"}
+        kwargs={"uidb64": "2222", "token": "set-password"}
     )
     methods_not_allowed = None
 
