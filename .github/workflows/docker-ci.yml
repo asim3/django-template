@@ -5,6 +5,10 @@ on:
     tags:
       - v-**
 
+env:
+  PROJECT_NAME: my_project_name
+  DATABASE_URL: postgresql://user_6:my-pass-6@192.168.122.161:5432/new_db_6
+
 jobs:
   docker_build:
     runs-on: my_project_name-staging-runner-v3
@@ -16,8 +20,8 @@ jobs:
       - name: Build Image
         run: >
           docker image build --no-cache
-          -t asim3/my_project_name:${GITHUB_REF_NAME:2}
-          -t asim3/my_project_name:latest
+          -t asim3/${PROJECT_NAME}:${GITHUB_REF_NAME:2}
+          -t asim3/${PROJECT_NAME}:latest
           .
 
 
@@ -27,10 +31,10 @@ jobs:
     needs: docker_build
     steps:
       - name: Push Image
-        run: docker push asim3/my_project_name:${GITHUB_REF_NAME:2}
+        run: docker push asim3/${PROJECT_NAME}:${GITHUB_REF_NAME:2}
 
       - name: Push Latest Image
-        run: docker push asim3/my_project_name:latest
+        run: docker push asim3/${PROJECT_NAME}:latest
 
 
   database_backup:
@@ -39,10 +43,10 @@ jobs:
     needs: docker_push
     steps:
       - name: Backup Staging Database
-        run: pg_dump postgresql://user_6:my-pass-6@192.168.122.161:5432/new_db_6 > ~/backup.${GITHUB_REF_NAME:2}.sql
+        run: pg_dump ${DATABASE_URL} > ~/backup.${GITHUB_REF_NAME:2}.sql
 
 #       - name: Restore Staging Database
-#         run: pg_dump postgresql://user_6:my-pass-6@192.168.122.161:5432/new_db_6 > /tmp/my_workflow_backup.0.sql
+#         run: pg_dump ${DATABASE_URL} > /tmp/my_workflow_backup.0.sql
 
 #       - name: Migrate Database
 #         run: python manage.py migrate
