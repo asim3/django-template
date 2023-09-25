@@ -8,6 +8,7 @@ on:
 env:
   PROJECT_NAME: test_project
 
+
 jobs:
   docker_test:
     runs-on: ubuntu-latest
