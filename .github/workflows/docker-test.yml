@@ -35,3 +35,6 @@ jobs:
           docker container run --rm
           -e DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.docker_dev
           asim3/${PROJECT_NAME}:${GIT_REF} 'python3 manage.py test'
+
+      - name: Clean Up /var/lib/docker/overlay
+        run: docker system prune --all --force --volumes
