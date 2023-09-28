@@ -5,14 +5,21 @@ from dotenv import dotenv_values
 from .base import *
 from .third_party.rest_framework import *
 
+import os
+
 
 DOTENV_CONFIG = dotenv_values(".env")
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = DOTENV_CONFIG["DJANGO_SECRET_KEY"]
+SECRET_KEY = DOTENV_CONFIG.get(
+    "DJANGO_SECRET_KEY", os.environ.get("DJANGO_SECRET_KEY"))
 
-# DEBUG = os.getenv('DJANGO_DEBUG', False) in (True, 'True')
+DEBUG = DOTENV_CONFIG.get(
+    "DJANGO_DEBUG", os.environ.get("DJANGO_DEBUG")) in (True, "True")
+
+ALLOWED_HOSTS = DOTENV_CONFIG.get(
+    "DJANGO_ALLOWED_HOSTS", os.environ.get("DJANGO_ALLOWED_HOSTS")).split(',')
 
 INSTALLED_APPS += [
     'user',

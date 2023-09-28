@@ -3,9 +3,6 @@ from .main import *
 import dj_database_url
 
 
-DEBUG = DOTENV_CONFIG["DJANGO_DEBUG"] in (True, "True")
-
-
 ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
