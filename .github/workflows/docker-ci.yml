@@ -1,13 +1,17 @@
 name: my_project_name CI/CD
-
 on:
   push:
     tags:
       - v-**
 
+
 env:
   PROJECT_NAME: "${{ github.event.repository.name }}"
-  DATABASE_URL: postgresql://user_6:my-pass-6@192.168.122.161:5432/new_db_6
+  PRODUCTION_DATABASE_URL: postgresql://user_10:my-pass-10@192.168.122.161:5432/new_db_10
+  STAGING_DATABASE_URL: postgresql://user_6:my-pass-6@192.168.122.161:5432/new_db_6
+  PRODUCTION_SCHEMA_NAME: user_10
+  STAGING_SCHEMA_NAME: user_9
+
 
 jobs:
   docker_build:
@@ -37,42 +41,77 @@ jobs:
         run: docker push asim3/${PROJECT_NAME}:latest
 
 
-  database_backup:
+  database_backup_stag:
     runs-on: "${{ github.event.repository.name }}-staging-runner-v3"
     name: Backup The Prod Database
     needs: docker_push
     steps:
-      - name: Backup Staging Database
-        run: pg_dump ${DATABASE_URL} > ~/backup.${GITHUB_REF_NAME:2}.sql
+      - name: Backup Production Database
+        run: >
+          pg_dump
+          --format=c
+          --no-owner
+          --schema=${PRODUCTION_SCHEMA_NAME}
+          --file=/tmp/backup.${GITHUB_REF_NAME:2}.dump
+          ${PRODUCTION_DATABASE_URL}
 
 
-  database_restore:
+  database_restore_stag:
     runs-on: "${{ github.event.repository.name }}-staging-runner-v3"
     name: Restore The Staging Database
-    needs: database_backup
+    needs: database_backup_stag
     steps:
       - name: Restore Staging Database
-        run: psql ${DATABASE_URL} -c "\l"
-        # run: psql ${DATABASE_URL} < ~/backup.${GITHUB_REF_NAME:2}.sql
+        run: >
+          pg_restore
+          --no-owner
+          --exit-on-error
+          --clean
+          --if-exists
+          --dbname=${STAGING_DATABASE_URL}
+          /tmp/backup.${GITHUB_REF_NAME:2}.dump
+
+      - name: Drop The Current Staging Schema
+        run: >
+          psql ${STAGING_DATABASE_URL}
+          -c "DROP SCHEMA IF EXISTS ${STAGING_SCHEMA_NAME} CASCADE;"
+
+      - name: Rename Backup Production Schema To The Current Schema
+        run: >
+          psql ${STAGING_DATABASE_URL}
+          -c "ALTER SCHEMA ${PRODUCTION_SCHEMA_NAME} RENAME TO ${STAGING_SCHEMA_NAME};"
 
 
-  # database_migrate:
-  #   runs-on: "${{ github.event.repository.name }}-staging-runner-v3"
-  #   name: Migrate The Staging Database
-  #   needs: database_restore
-  #   steps:
-  #     - name: Migrate Database
-  #       run: python manage.py migrate
+  database_migrate_stag:
+    runs-on: "${{ github.event.repository.name }}-staging-runner-v3"
+    name: Migrate The Staging Database
+    needs: database_restore_stag
+    steps:
+      - name: Migrate Database
+        run: >
+          docker container run --rm
+          -e DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.docker_staging
+          -e DJANGO_SECRET_KEY=aksdjfsnferrqwerqwerczoqreqmnlvbreurewr
+          -e DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+          -e DJANGO_DEBUG=True
+          -e DATABASE_URL=${STAGING_DATABASE_URL}
+          asim3/${PROJECT_NAME}:${GITHUB_REF_NAME:2} 'python3 manage.py migrate'
 
-  #     - name: Collect Static
-  #       run: python manage.py collectstatic --noinput
+      - name: Collect Static
+        run: >
+          docker container run --rm
+          -e DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.docker_staging
+          -e DJANGO_SECRET_KEY=aksdjfsnferrqwerqwerczoqreqmnlvbreurewr
+          -e DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+          -e DJANGO_DEBUG=True
+          -e DATABASE_URL=${STAGING_DATABASE_URL}
+          asim3/${PROJECT_NAME}:${GITHUB_REF_NAME:2} 'python3 manage.py collectstatic --noinput'
 
 
   update_stack:
     runs-on: "${{ github.event.repository.name }}-staging-runner-v3"
     name: Update Swarm Prod Stack
-    # TODO: needs: database_migrate
-    needs: docker_push
+    needs: database_migrate_stag
     steps:
       - name: Update Swarm Stack File
         run: >
@@ -81,7 +120,7 @@ jobs:
           -H "Accept: application/vnd.github+json"
           -H "Authorization: Bearer ${GITHUB_TOKEN}"
           -H "X-GitHub-Api-Version: 2022-11-28"
-          https://api.github.com/repos/asim3/aaaaaaaaaaa/actions/workflows/swarm-cd.yml/dispatches
+          https://api.github.com/repos/asim3/accounting/actions/workflows/swarm-cd.yml/dispatches
           -d '{"ref":"main","inputs":{"stack_file":"'${PROJECT_NAME}'","image_tag":"'${GITHUB_REF_NAME:2}'"}}'
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_ACTIONS_WRITE }}
