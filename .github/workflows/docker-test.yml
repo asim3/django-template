@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  PROJECT_NAME: test_project
+  PROJECT_NAME: my_project_name
   PROJECT_IMAGE_NAME: "ghcr.io/asim3/${{ github.event.repository.name }}"
 
 
