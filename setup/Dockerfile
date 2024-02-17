@@ -8,6 +8,9 @@ COPY ./requirements.txt /requirements.txt
 
 RUN pip wheel --wheel-dir=/root/wheels -r /requirements.txt
 
+LABEL org.opencontainers.image.source=https://github.com/asim3/my_project_name
+LABEL org.opencontainers.image.description="Django: my_project_name"
+
 
 
 FROM base
