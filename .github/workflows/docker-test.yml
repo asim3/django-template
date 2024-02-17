@@ -7,15 +7,15 @@ on:
 
 env:
   PROJECT_NAME: test_project
+  PROJECT_IMAGE_NAME: "ghcr.io/asim3/${{ github.event.repository.name }}"
 
 
 jobs:
   docker_test:
-    # runs-on: "${{ github.event.repository.name }}-staging-runner-v3"
     runs-on: ubuntu-latest
     name: Test on Docker
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Create New Django Project
         run: if [ -x ./setup/set-new-django-project.bash ]; then echo ${PROJECT_NAME} | make init; fi;
@@ -27,7 +27,7 @@ jobs:
         run: >
           GIT_REF=$(git rev-parse --verify HEAD);
           docker image build --no-cache
-          -t asim3/${PROJECT_NAME}:${GIT_REF}
+          -t ${PROJECT_IMAGE_NAME}:${GIT_REF}
           .
 
       - name: Run All Django Tests
@@ -35,7 +35,36 @@ jobs:
           GIT_REF=$(git rev-parse --verify HEAD);
           docker container run --rm
           -e DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.docker_dev
-          asim3/${PROJECT_NAME}:${GIT_REF} 'python3 manage.py test'
+          ${PROJECT_IMAGE_NAME}:${GIT_REF} 'python3 manage.py test'
 
-      - name: Clean Up /var/lib/docker/overlay
-        run: docker system prune --all --force --volumes
+      # - name: Clean Up /var/lib/docker/overlay
+      #   run: docker system prune --all --force --volumes
+
+
+  docker_push:
+    name: Push Docker Image
+    needs: docker_test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker
+        run: >
+          if [ -d ./${PROJECT_NAME} ]; then
+            GIT_REF=$(git rev-parse --verify HEAD);
+            docker image build --no-cache
+            -t ${PROJECT_IMAGE_NAME}:${GIT_REF}
+            .;
+          fi;
+
+      - name: Push Image To Container Registry
+        run: >
+          ls -al;
+          docker image ls -a;
+          if [ -d ./${PROJECT_NAME} ]; then
+            GIT_REF=$(git rev-parse --verify HEAD);
+            docker push ${PROJECT_IMAGE_NAME}:${GIT_REF};
+          fi;
+
+      # - name: Clean Up /var/lib/docker/overlay
+      #   run: docker system prune --all --force --volumes
