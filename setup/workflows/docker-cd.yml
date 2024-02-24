@@ -1,0 +1,36 @@
+name: my_project_name CD
+
+on:
+  push:
+    tags:
+      - staging-**
+
+env:
+  PROJECT_NAME: my_project_name
+  PROJECT_IMAGE_NAME: "ghcr.io/asim3/${{ github.event.repository.name }}"
+
+
+jobs:
+  docker_deploy:
+    name: Deploy Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update Stack Image Tag
+        run: >
+          GIT_REF=$(git rev-parse --verify HEAD);
+          ${PROJECT_IMAGE_NAME}
+          ${GIT_REF}
+
+      - name: Commite the change
+        run: >
+          ls -al ./
+
+      - name: Make new release
+        run: >
+          ls -al ./
+
+      - name: Deploy Stack to SWARM
+        run: >
+          ls -al ./

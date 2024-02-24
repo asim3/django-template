@@ -28,8 +28,10 @@ update-project-name() {
 	sed -i -e "s/my_project_name/${name}/g" ./README.md
 	sed -i -e "s/my_project_name/${name}/g" ./setup/Dockerfile
 	sed -i -e "s/my_project_name/${name}/g" ./setup/docker-compose.yml
-	sed -i -e "s/my_project_name/${name}/g" ./.github/workflows/docker-test.yml
-	sed -i -e "s/my_project_name/${name}/g" ./.github/workflows/docker-ci.yml
+	sed -i -e "s/my_project_name/${name}/g" ./setup/workflows/staging-ci.yml
+	sed -i -e "s/my_project_name/${name}/g" ./setup/workflows/staging-cd.yml
+	sed -i -e "s/my_project_name/${name}/g" ./setup/deploy/docker-compose.yml
+	sed -i -e "s/my_project_name/${name}/g" ./setup/deploy/Dockerfile
 }
 
 
@@ -58,11 +60,17 @@ setup-docker() {
 }
 
 
+setup-cicd-deploy() {
+	mv ./setup/workflows/staging-ci.yml        ./.github/workflows/
+	mv ./setup/workflows/staging-cd.yml        ./.github/workflows/
+	rm -rf ./.github/workflows/docker-test.yml
+}
+
+
 copy-django-apps() {
 	mv ./setup/apps/urls.py ./${name}/${name}/urls.py
 	mv ./setup/apps/* ./${name}/
 }
-
 
 
 remove-setup-files() {
@@ -76,5 +84,6 @@ setup-django-settings
 setup-django-static
 setup-dotenv
 setup-docker
+setup-cicd-deploy
 copy-django-apps
 remove-setup-files
