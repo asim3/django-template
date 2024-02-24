@@ -1,4 +1,4 @@
-name: my_project_name CD
+name: my_project_name Staging CD
 
 on:
   push:
@@ -12,7 +12,7 @@ env:
 
 jobs:
   docker_deploy:
-    name: Deploy Docker Image
+    name: Deploy To SWARM
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,8 +20,8 @@ jobs:
       - name: Update Stack Image Tag
         run: >
           GIT_REF=$(git rev-parse --verify HEAD);
-          ${PROJECT_IMAGE_NAME}
-          ${GIT_REF}
+          echo ${PROJECT_IMAGE_NAME};
+          echo ${GIT_REF}
 
       - name: Commite the change
         run: >
@@ -34,3 +34,7 @@ jobs:
       - name: Deploy Stack to SWARM
         run: >
           ls -al ./
+
+      - name: Clean Up Docker Login
+        if: always()
+        run: rm -rf ~/.docker

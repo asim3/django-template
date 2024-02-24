@@ -1,4 +1,4 @@
-name: my_project_name CI
+name: my_project_name Staging CI
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Copy Env File
+      - name: Copy Tests Env File
         run: cp ${PROJECT_NAME}/.env.sample ${PROJECT_NAME}/.env
 
       - name: Build Docker
@@ -61,3 +61,22 @@ jobs:
       - name: Clean Up Docker Login
         if: always()
         run: rm -rf ~/.docker
+
+
+  docker_deploy:
+    name: Add new Release
+    needs: docker_push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Push the new release
+        env:
+          GH_TOKEN: ${{ secrets.GIT_REPOSITORY_TOKEN }}
+        run: >
+          GIT_REF=$(git rev-parse --verify HEAD);
+          gh release create staging-${GIT_REF:0:11}
+          --latest
+          --prerelease
+          --title "Staging ${GIT_REF:0:11}"
+          --notes "Staging ${GIT_REF}"
