@@ -57,6 +57,7 @@ setup-dotenv() {
 setup-docker() {
 	mv ./setup/Dockerfile          ./
 	mv ./setup/docker-compose.yml  ./
+	mv ./setup/deploy              ./
 }
 
 

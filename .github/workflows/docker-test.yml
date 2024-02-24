@@ -36,3 +36,10 @@ jobs:
           docker container run --rm
           -e DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.docker_dev
           ${PROJECT_IMAGE_NAME}:${GIT_REF} 'python3 manage.py test'
+
+      - name: Debug
+        run: |
+          ls -al ./;
+          ls -al ./init_test_github;
+          ls -al ./deploy;
+          ls -al ./setup/workflows;

@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   app:
-    image: ghcr.io/asim3/my_project_name:1.2
+    image: ghcr.io/asim3/my_project_name:${PROJECT_IMAGE_TAG}
     user: "1000:1000"
     environment:
       TZ: Asia/Riyadh
@@ -18,7 +18,10 @@ services:
       mode: replicated
       replicas: 2
       labels:
-        - traefik.enable=false
+        - traefik.enable=true
+        - traefik.http.routers.my_project_name-app.rule=Host(`my_project_name.staging.asimt.sa`)
+        - traefik.http.routers.my_project_name-app.tls=true
+        - traefik.http.services.my_project_name-svc.loadbalancer.server.port=443
       resources:
         reservations:
           memory: 128M
@@ -35,7 +38,7 @@ services:
       - main-public
 
     ports:
-      - "8001:80"
+      - "8000:80"
 
 
 networks:
