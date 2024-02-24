@@ -38,8 +38,8 @@ jobs:
           ${PROJECT_IMAGE_NAME}:${GIT_REF} 'python3 manage.py test'
 
       - name: Debug
-        run: |
+        run: >
           ls -al ./;
           ls -al ./init_test_github;
           ls -al ./deploy;
-          ls -al ./setup/workflows;
+          ls -al ./.github/workflows;
