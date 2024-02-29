@@ -7,8 +7,9 @@ on:
 
 env:
   PROJECT_NAME: my_project_name
-  PROJECT_IMAGE_NAME: "ghcr.io/asim3/${{ github.event.repository.name }}"
-
+  DOCKER_HOST: "${{ vars.SSH_STAG_URI }}"
+  SSH_HOST_KEY: "${{ vars.SSH_STAG_HOST_KEY }}"
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_STAG_PRIVATE_KEY }}
 
 jobs:
   docker_deploy:
@@ -17,24 +18,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Update Stack Image Tag
-        run: >
-          GIT_REF=$(git rev-parse --verify HEAD);
-          echo ${PROJECT_IMAGE_NAME};
-          echo ${GIT_REF}
+      - name: Add host to ssh/known_host file
+        run: mkdir -p ~/.ssh && echo "$SSH_HOST_KEY" >> ~/.ssh/known_hosts
 
-      - name: Commite the change
+      - name: Deploy To Docker Station
         run: >
-          ls -al ./
+          GIT_REF=$(git rev-parse --verify HEAD)
+          && export PROJECT_IMAGE_TAG=${GIT_REF}
+          && eval "$(ssh-agent -s)"
+          && ssh-add - <<< $SSH_PRIVATE_KEY
+          && docker stack deploy -c ./deploy/docker-compose.yml    ${PROJECT_NAME}
 
-      - name: Make new release
-        run: >
-          ls -al ./
-
-      - name: Deploy Stack to SWARM
-        run: >
-          ls -al ./
-
-      - name: Clean Up Docker Login
+      - name: Clean Up SSH
         if: always()
-        run: rm -rf ~/.docker
+        run: rm -rf ~/.ssh
