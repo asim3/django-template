@@ -20,26 +20,19 @@ jobs:
       - name: Create New Django Project
         run: if [ -x ./setup/set-new-django-project.bash ]; then echo ${PROJECT_NAME} | make init; fi;
 
-      - name: Copy Env File
-        run: cp ${PROJECT_NAME}/.env.sample ${PROJECT_NAME}/.env
+      - name: Copy Tests Env File
+        run: cp ./${PROJECT_NAME}/.env.sample ./${PROJECT_NAME}/.env
 
       - name: Build Docker
         run: >
-          GIT_REF=$(git rev-parse --verify HEAD);
           docker image build --no-cache
-          -t ${PROJECT_IMAGE_NAME}:${GIT_REF}
-          .
+          -t ${PROJECT_IMAGE_NAME}:tests
+          -f ./deploy/Dockerfile . ;
 
       - name: Run All Django Tests
         run: >
-          GIT_REF=$(git rev-parse --verify HEAD);
           docker container run --rm
-          -e DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.docker_dev
-          ${PROJECT_IMAGE_NAME}:${GIT_REF} 'python3 manage.py test'
+          -e DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings.docker_testing
+          -e DATABASE_URL=sqlite:///db.sqlite3
+          ${PROJECT_IMAGE_NAME}:tests 'python3 manage.py test'
 
-      - name: Debug
-        run: >
-          ls -al ./;
-          ls -al ./init_test_github;
-          ls -al ./deploy;
-          ls -al ./.github/workflows;
