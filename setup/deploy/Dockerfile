@@ -13,7 +13,7 @@ LABEL org.opencontainers.image.description="Django: my_project_name"
 
 
 
-FROM base
+FROM base AS main
 
 RUN apt-get -y update && apt-get -y install libpq5
 

@@ -28,8 +28,10 @@ update-project-name() {
 	sed -i -e "s/my_project_name/${name}/g" ./README.md
 	sed -i -e "s/my_project_name/${name}/g" ./setup/Dockerfile
 	sed -i -e "s/my_project_name/${name}/g" ./setup/docker-compose.yml
-	sed -i -e "s/my_project_name/${name}/g" ./setup/workflows/staging-ci.yml
-	sed -i -e "s/my_project_name/${name}/g" ./setup/workflows/staging-cd.yml
+	sed -i -e "s/my_project_name/${name}/g" ./setup/workflows/prod-ci-cd.yml
+	sed -i -e "s/my_project_name/${name}/g" ./setup/workflows/stag-ci-cd.yml
+	sed -i -e "s/my_project_name/${name}/g" ./setup/workflows/testing.yml
+	sed -i -e "s/my_project_name/${name}/g" ./setup/deploy/docker-compose-staging.yml
 	sed -i -e "s/my_project_name/${name}/g" ./setup/deploy/docker-compose.yml
 	sed -i -e "s/my_project_name/${name}/g" ./setup/deploy/Dockerfile
 }
