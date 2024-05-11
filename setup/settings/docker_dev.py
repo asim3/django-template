@@ -1,5 +1,9 @@
+from dotenv import dotenv_values
+
 from .main import *
 
+
+DOTENV_CONFIG = dotenv_values(".env")
 
 DEBUG = True
 
@@ -9,6 +13,17 @@ ALLOWED_HOSTS = [
     "localhost",
     "*",
 ]
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": "postgresql",
+        "PORT": "5432",
+        "NAME": "db_pg",
+        "USER": "user_pg",
+        "PASSWORD": DOTENV_CONFIG.get('POSTGRES_PASSWORD'),
+    }
+}
 
 INSTALLED_APPS += [
     "debug_toolbar",

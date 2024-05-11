@@ -41,32 +41,6 @@ DATABASES = {
     }
 }
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'ERROR',
-            'class': 'logging.StreamHandler',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'mail_admins'],
-            'level': 'ERROR',
-        },
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-    },
-}
-
 LOGIN_URL = reverse_lazy('admin:login')
 
 LOGIN_REDIRECT_URL = reverse_lazy('admin:index')
@@ -103,6 +77,8 @@ DATE_FORMAT = 'Y / m / d'
 DATETIME_FORMAT = 'Y / m / d P'
 
 # EMAIL
+SERVER_EMAIL = "info@gmail.com"
+
 DEFAULT_FROM_EMAIL = "info@gmail.com"
 
 EMAIL_HOST = "smtp.gmail.com"
@@ -117,9 +93,13 @@ EMAIL_USE_TLS = True
 
 EMAIL_TIMEOUT = 15
 
+EMAIL_SUBJECT_PREFIX = "[my_project_name.sa]"
+
 ADMINS = [
     ('Asim', 'asimwebapps@gmail.com'),
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # OTP
 OTP_MAX_LENGTH = 4

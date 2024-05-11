@@ -1,8 +1,10 @@
+from dotenv import dotenv_values
+
 from .main import *
-from .third_party.django_storages import *
+# from .third_party.django_storages import *
 
-import dj_database_url
 
+DOTENV_CONFIG = dotenv_values(".env")
 
 DEBUG = False
 
@@ -10,15 +12,18 @@ ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
     "localhost",
-    "my_project_name.asim.sa",
-    "123.456.789.123",
+    "my_project_name.sa",
 ]
 
 DATABASES = {
-    "default": dj_database_url.config(
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": "postgresql-prod",
+        "PORT": "5432",
+        "NAME": "my_project_name_db_v3",
+        "USER": "my_project_name_user_v3",
+        "PASSWORD": DOTENV_CONFIG.get('POSTGRES_PASSWORD'),
+    }
 }
 
 LOGGING = {
@@ -47,11 +52,21 @@ LOGGING = {
     },
 }
 
-SECURE_SSL_REDIRECT = True
+STATIC_URL = "https://static.my_project_name.sa/static/"
+
+MEDIA_URL = "https://static.my_project_name.sa/media/"
+
+# SECURE_SSL_REDIRECT = True
 
 SESSION_COOKIE_SECURE = True
 
 CSRF_COOKIE_SECURE = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://my_project_name.sa",
+    "https://www.my_project_name.sa",
+    "https://static.my_project_name.sa",
+]
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
@@ -68,3 +83,12 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 # third_party
 AWS_LOCATION = 'production'
+
+# EMAIL
+SERVER_EMAIL = "my_project_name@gmail.com"
+
+DEFAULT_FROM_EMAIL = "my_project_name@gmail.com"
+
+EMAIL_HOST_USER = "my_project_name@gmail.com"
+
+EMAIL_SUBJECT_PREFIX = "[my_project_name.sa]"
