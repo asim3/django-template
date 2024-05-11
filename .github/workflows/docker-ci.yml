@@ -2,7 +2,7 @@ name: my_project_name CI/CD
 on:
   push:
     tags:
-      - v-**
+      - db_backup-v-**
 
 
 env:

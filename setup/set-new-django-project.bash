@@ -62,8 +62,9 @@ setup-docker() {
 
 
 setup-cicd-deploy() {
-	mv ./setup/workflows/staging-ci.yml        ./.github/workflows/
-	mv ./setup/workflows/staging-cd.yml        ./.github/workflows/
+	mv ./setup/workflows/prod-ci-cd.yml     ./.github/workflows/
+	mv ./setup/workflows/stag-ci-cd.yml     ./.github/workflows/
+	mv ./setup/workflows/testing.yml        ./.github/workflows/
 	rm -rf ./.github/workflows/docker-test.yml
 }
 

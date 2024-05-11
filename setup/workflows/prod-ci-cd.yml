@@ -1,0 +1,88 @@
+name: Production CI/CD
+
+on:
+  push:
+    branches:
+      - prod/**
+
+env:
+  PROJECT_NAME: my_project_name
+  PROJECT_IMAGE_NAME: "ghcr.io/asim3/${{ github.event.repository.name }}"
+
+
+jobs:
+  docker_push:
+    name: Push Docker Image
+    needs: docker_test
+    runs-on: ubuntu-latest
+    outputs:
+      app_version: ${{ steps.new_release.outputs.VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Git User
+        run: >
+          git config --local user.email "asimwebapps@gmail.com";
+          git config --local user.name "Asim";
+
+      - name: Push the new release
+        id: new_release
+        run: >
+          git fetch --tags origin;
+          BRANCH=$(echo ${GITHUB_REF_NAME} | cut -d "/" -f 2);
+          VERSION=$(git tag -l "${BRANCH}.[0-9]*" --sort=-v:refname | head -n 1  | cut -d "-" -f 2 | awk -F. -v OFS=. '{$NF += 1 ; print}');
+          VERSION=$([ -z "$VERSION" ] && echo "${BRANCH}.0" || echo $VERSION);
+          git tag -a ${VERSION} -m "Staging ${VERSION}";
+          git push origin ${VERSION};
+          echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT";
+      
+      - name: Build Docker
+        run: >
+          docker image build --no-cache
+          -t ${PROJECT_IMAGE_NAME}:${{ steps.new_release.outputs.VERSION }}
+          -f ./deploy/Dockerfile . ;
+
+      - name: Login To Container Registry
+        env:
+          GHCR_TOKEN: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
+        run: echo ${GHCR_TOKEN} | docker login ghcr.io --username asim3 --password-stdin
+
+      - name: Push Image To Container Registry
+        run: >
+          docker image ls -a;
+          docker push ${PROJECT_IMAGE_NAME}:${{ steps.new_release.outputs.VERSION }};
+
+      - name: Clean Up Docker Login
+        if: always()
+        run: rm -rf ~/.docker
+
+  docker_deploy:
+    name: Deploy To SWARM
+    needs: docker_push
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_HOST: "${{ secrets.SSH_PROD_URI }}"
+      SSH_HOST_KEY: "${{ secrets.SSH_PROD_HOST_KEY }}"
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PROD_PRIVATE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add host to ssh/known_host file
+        run: mkdir -p ~/.ssh && echo "$SSH_HOST_KEY" >> ~/.ssh/known_hosts
+
+      - name: Pull The New Docker Image
+        run: >
+          eval "$(ssh-agent -s)"
+          && ssh-add - <<< $SSH_PRIVATE_KEY
+          && ssh $DOCKER_HOST "docker pull ${PROJECT_IMAGE_NAME}:${{ needs.docker_push.outputs.app_version }}"
+
+      - name: Deploy To Docker Station
+        run: >
+          export PROJECT_IMAGE_TAG=${{ needs.docker_push.outputs.app_version }}
+          && eval "$(ssh-agent -s)"
+          && ssh-add - <<< $SSH_PRIVATE_KEY
+          && docker stack deploy -c ./deploy/docker-compose.yml   ${PROJECT_NAME}-prod
+
+      - name: Clean Up SSH
+        if: always()
+        run: rm -rf ~/.ssh
