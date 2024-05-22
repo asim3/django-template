@@ -2,7 +2,7 @@ SHELL=/bin/bash
 
 PROJECT_NAME=my_project_name
 
-DOCKER_RUN=docker compose run app
+DOCKER_RUN=docker compose run --rm app
 
 
 main: run
