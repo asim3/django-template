@@ -37,4 +37,4 @@ USER d_user
 
 ENTRYPOINT ["/bin/sh", "-c"]
 
-CMD ["gunicorn --bind :8000 --workers 3 my_project_name.wsgi"]
+CMD ["python3 manage.py runserver 0.0.0.0:8000"]

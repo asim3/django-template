@@ -5,12 +5,26 @@ services:
     image: postgres
     restart: unless-stopped
     container_name: my_project_name-db
-    volumes:
-      - my_project_name-db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=db_pg
       - POSTGRES_USER=user_pg
       - POSTGRES_PASSWORD=pass_pg
+    volumes:
+      - my_project_name-db:/var/lib/postgresql/data
+ 
+  app-migrate:
+    build: .
+    container_name: my_project_name-migrate
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+      - "python manage.py migrate && python manage.py collectstatic --no-input"
+    depends_on:
+      - postgresql
+    environment:
+      - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
+    volumes:
+      - ./my_project_name:/home/d_user/web
  
   app:
     build: .
@@ -18,10 +32,11 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - postgresql
+      - app-migrate
     environment:
       - DJANGO_SETTINGS_MODULE=my_project_name.settings.docker_dev
-      - DATABASE_URL=postgres://user_pg:pass_pg@postgresql:5432/db_pg
+    volumes:
+      - ./my_project_name:/home/d_user/web
 
 volumes:
   my_project_name-db:
