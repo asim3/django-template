@@ -15,7 +15,7 @@ LABEL org.opencontainers.image.description="Django: my_project_name"
 
 FROM base
 
-RUN apt-get -y update && apt-get -y install libpq5
+RUN apt-get -y update && apt-get -y install libpq5 gettext
 
 RUN adduser --system --shell /bin/bash --uid 1000 --group --disabled-password --disabled-login d_user
 
