@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  postgresql-stag:
+  my_project_name-postgresql-stag:
     image: postgres:16.2-alpine3.19
     restart: unless-stopped
     environment:

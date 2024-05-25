@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  postgresql-prod:
+  my_project_name-postgresql-prod:
     image: postgres:16.2-alpine3.19
     restart: unless-stopped
     environment:

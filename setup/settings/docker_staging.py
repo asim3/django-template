@@ -17,7 +17,7 @@ ALLOWED_HOSTS = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "HOST": "postgresql-stag",
+        "HOST": "my_project_name-postgresql-stag",
         "PORT": "5432",
         "NAME": "my_project_name_db_v4",
         "USER": "my_project_name_user_v4",
