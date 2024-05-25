@@ -41,10 +41,10 @@ services:
       replicas: 2
       labels:
         traefik.enable: "true"
-        traefik.http.routers.my_project_name-stag-static-app.rule: Host(`my_project_name.static.asimt.sa`)
-        traefik.http.routers.my_project_name-stag-static-app.tls: "true"
-        traefik.http.routers.my_project_name-stag-static-app.tls.certresolver: prodResolver
-        traefik.http.services.my_project_name-stag-static-svc.loadbalancer.server.port: 80
+        traefik.http.routers.${PROJECT_REPO_NAME}-stag-static-app.rule: Host(`my_project_name.static.asimt.sa`)
+        traefik.http.routers.${PROJECT_REPO_NAME}-stag-static-app.tls: "true"
+        traefik.http.routers.${PROJECT_REPO_NAME}-stag-static-app.tls.certresolver: prodResolver
+        traefik.http.services.${PROJECT_REPO_NAME}-stag-static-svc.loadbalancer.server.port: 80
       resources:
         reservations:
           memory: 128M
@@ -58,7 +58,7 @@ services:
       - main-public
 
   app-migrate:
-    image: ghcr.io/asim3/my_project_name:${PROJECT_IMAGE_TAG}
+    image: ghcr.io/asim3/${PROJECT_REPO_NAME}:${PROJECT_IMAGE_TAG}
     entrypoint:
       - "/bin/sh"
       - "-c"
@@ -83,7 +83,7 @@ services:
       - main-public
 
   app:
-    image: ghcr.io/asim3/my_project_name:${PROJECT_IMAGE_TAG}
+    image: ghcr.io/asim3/${PROJECT_REPO_NAME}:${PROJECT_IMAGE_TAG}
     environment:
       TZ: Asia/Riyadh
       DJANGO_SETTINGS_MODULE: "my_project_name.settings.docker_staging"
@@ -101,10 +101,10 @@ services:
       replicas: 1
       labels:
         traefik.enable: "true"
-        traefik.http.routers.my_project_name-stag-app.rule: Host(`my_project_name.asimt.sa`)
-        traefik.http.routers.my_project_name-stag-app.tls: "true"
-        traefik.http.routers.my_project_name-stag-app.tls.certresolver: prodResolver
-        traefik.http.services.my_project_name-stag-svc.loadbalancer.server.port: 8000
+        traefik.http.routers.${PROJECT_REPO_NAME}-stag-app.rule: Host(`my_project_name.asimt.sa`)
+        traefik.http.routers.${PROJECT_REPO_NAME}-stag-app.tls: "true"
+        traefik.http.routers.${PROJECT_REPO_NAME}-stag-app.tls.certresolver: prodResolver
+        traefik.http.services.${PROJECT_REPO_NAME}-stag-svc.loadbalancer.server.port: 8000
         # https://doc.traefik.io/traefik/routing/providers/docker/
       resources:
         reservations:

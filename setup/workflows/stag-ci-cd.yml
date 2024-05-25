@@ -6,7 +6,7 @@ on:
       - stag/**
 
 env:
-  PROJECT_NAME: my_project_name
+  PROJECT_REPO_NAME: ${{ github.event.repository.name }}
   PROJECT_IMAGE_NAME: "ghcr.io/asim3/${{ github.event.repository.name }}"
 
 
@@ -80,7 +80,7 @@ jobs:
           export PROJECT_IMAGE_TAG=${{ needs.docker_push.outputs.app_version }}
           && eval "$(ssh-agent -s)"
           && ssh-add - <<< $SSH_PRIVATE_KEY
-          && docker stack deploy -c ./deploy/docker-compose-staging.yml   ${PROJECT_NAME}-stag
+          && docker stack deploy -c ./deploy/docker-compose-staging.yml   ${PROJECT_REPO_NAME}-stag
 
       - name: Clean Up SSH
         if: always()
