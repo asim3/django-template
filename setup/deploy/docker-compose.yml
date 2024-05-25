@@ -41,10 +41,10 @@ services:
       replicas: 2
       labels:
         traefik.enable: "true"
-        traefik.http.routers.${PROJECT_REPO_NAME}-prod-static-app.rule: Host(`static.my_project_name.sa`)
-        traefik.http.routers.${PROJECT_REPO_NAME}-prod-static-app.tls: "true"
-        traefik.http.routers.${PROJECT_REPO_NAME}-prod-static-app.tls.certresolver: prodResolver
-        traefik.http.services.${PROJECT_REPO_NAME}-prod-static-svc.loadbalancer.server.port: 80
+        traefik.http.routers.my_project_name-prod-static-app.rule: Host(`static.my_project_name.sa`)
+        traefik.http.routers.my_project_name-prod-static-app.tls: "true"
+        traefik.http.routers.my_project_name-prod-static-app.tls.certresolver: prodResolver
+        traefik.http.services.my_project_name-prod-static-svc.loadbalancer.server.port: 80
       resources:
         reservations:
           memory: 128M
@@ -101,10 +101,10 @@ services:
       replicas: 1
       labels:
         traefik.enable: "true"
-        traefik.http.routers.${PROJECT_REPO_NAME}-prod-app.rule: Host(`my_project_name.sa`)
-        traefik.http.routers.${PROJECT_REPO_NAME}-prod-app.tls: "true"
-        traefik.http.routers.${PROJECT_REPO_NAME}-prod-app.tls.certresolver: prodResolver
-        traefik.http.services.${PROJECT_REPO_NAME}-prod-svc.loadbalancer.server.port: 8000
+        traefik.http.routers.my_project_name-prod-app.rule: Host(`my_project_name.sa`)
+        traefik.http.routers.my_project_name-prod-app.tls: "true"
+        traefik.http.routers.my_project_name-prod-app.tls.certresolver: prodResolver
+        traefik.http.services.my_project_name-prod-svc.loadbalancer.server.port: 8000
         # https://doc.traefik.io/traefik/routing/providers/docker/
       resources:
         reservations:
