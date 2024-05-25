@@ -13,7 +13,6 @@ env:
 jobs:
   docker_push:
     name: Push Docker Image
-    needs: docker_test
     runs-on: ubuntu-latest
     outputs:
       app_version: ${{ steps.new_release.outputs.VERSION }}
